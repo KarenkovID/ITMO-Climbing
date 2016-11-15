@@ -18,8 +18,6 @@ import android.widget.Button;
 
 import com.facebook.stetho.Stetho;
 
-import ru.climbing.itmo.itmoclimbing.graphicPart.GLActivity;
-
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -104,14 +102,14 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment = null;
         Class fragmentClass = null;
         if (id == R.id.nav_routs) {
-            fragmentClass = Routs.class;
+            fragmentClass = RoutsFragment.class;
             // Handle the camera action
         } else if (id == R.id.nav_members) {
-            fragmentClass = Members.class;
+            fragmentClass = MembersFragment.class;
         } else if (id == R.id.nav_festival) {
-            fragmentClass = Festival.class;
+            fragmentClass = FestivalFragment.class;
         } else if (id == R.id.nav_profile) {
-            fragmentClass = Profile.class;
+            fragmentClass = ProfileFragment.class;
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_logout) {
