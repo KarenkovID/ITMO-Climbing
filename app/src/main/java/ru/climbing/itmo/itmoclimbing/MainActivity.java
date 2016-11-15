@@ -18,6 +18,8 @@ import android.widget.Button;
 
 import com.facebook.stetho.Stetho;
 
+import ru.climbing.itmo.itmoclimbing.graphicPart.GLActivity;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -32,7 +34,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, PersonInfoActivity.class);
+                Intent intent = new Intent(MainActivity.this, GLActivity.class);
 
                 if (intent != null) {
                     startActivity(intent);
@@ -76,6 +78,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+Loc
         return true;
     }
 

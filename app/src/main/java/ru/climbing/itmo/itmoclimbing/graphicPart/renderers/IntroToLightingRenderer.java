@@ -10,6 +10,10 @@ import android.util.Log;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -56,14 +60,20 @@ public class IntroToLightingRenderer implements GLSurfaceView.Renderer {
      * Stores a copy of the model matrix specifically for the light position.
      */
     private float[] mLightModelMatrix = new float[16];
-    /** Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when
-     *  we multiply this by our transformation matrices. */
-    private final float[] mLightPosInModelSpace = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
+    /**
+     * Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when
+     * we multiply this by our transformation matrices.
+     */
+    private final float[] mLightPosInModelSpace = new float[]{0.0f, 0.0f, 0.0f, 1.0f};
 
-    /** Used to hold the current position of the light in world space (after transformation via model matrix). */
+    /**
+     * Used to hold the current position of the light in world space (after transformation via model matrix).
+     */
     private final float[] mLightPosInWorldSpace = new float[4];
 
-    /** Used to hold the transformed position of the light in eye space (after transformation via modelview matrix) */
+    /**
+     * Used to hold the transformed position of the light in eye space (after transformation via modelview matrix)
+     */
     private final float[] mLightPosInEyeSpace = new float[4];
     /**
      * Store the model matrix. This matrix is used to move models from object space (where each model can be thought
@@ -71,7 +81,9 @@ public class IntroToLightingRenderer implements GLSurfaceView.Renderer {
      */
     private float[] mModelMatrix = new float[16];
 
-    /** Allocate storage for the final combined matrix. This will be passed into the shader program. */
+    /**
+     * Allocate storage for the final combined matrix. This will be passed into the shader program.
+     */
     private float[] mMVPMatrix = new float[16];
 
 
@@ -95,7 +107,6 @@ public class IntroToLightingRenderer implements GLSurfaceView.Renderer {
 
         bindData();
     }
-
 
 
     private void bindData() {
@@ -212,54 +223,54 @@ public class IntroToLightingRenderer implements GLSurfaceView.Renderer {
         // orthogonal to the plane of the surface. For a cube model, the normals
         // should be orthogonal to the points of each face.
         final float[] cubeNormalData = {
-                        // Front face
-                        0.0f, 0.0f, 1.0f,
-                        0.0f, 0.0f, 1.0f,
-                        0.0f, 0.0f, 1.0f,
-                        0.0f, 0.0f, 1.0f,
-                        0.0f, 0.0f, 1.0f,
-                        0.0f, 0.0f, 1.0f,
+                // Front face
+                0.0f, 0.0f, 1.0f,
+                0.0f, 0.0f, 1.0f,
+                0.0f, 0.0f, 1.0f,
+                0.0f, 0.0f, 1.0f,
+                0.0f, 0.0f, 1.0f,
+                0.0f, 0.0f, 1.0f,
 
-                        // Right face
-                        1.0f, 0.0f, 0.0f,
-                        1.0f, 0.0f, 0.0f,
-                        1.0f, 0.0f, 0.0f,
-                        1.0f, 0.0f, 0.0f,
-                        1.0f, 0.0f, 0.0f,
-                        1.0f, 0.0f, 0.0f,
+                // Right face
+                1.0f, 0.0f, 0.0f,
+                1.0f, 0.0f, 0.0f,
+                1.0f, 0.0f, 0.0f,
+                1.0f, 0.0f, 0.0f,
+                1.0f, 0.0f, 0.0f,
+                1.0f, 0.0f, 0.0f,
 
-                        // Back face
-                        0.0f, 0.0f, -1.0f,
-                        0.0f, 0.0f, -1.0f,
-                        0.0f, 0.0f, -1.0f,
-                        0.0f, 0.0f, -1.0f,
-                        0.0f, 0.0f, -1.0f,
-                        0.0f, 0.0f, -1.0f,
+                // Back face
+                0.0f, 0.0f, -1.0f,
+                0.0f, 0.0f, -1.0f,
+                0.0f, 0.0f, -1.0f,
+                0.0f, 0.0f, -1.0f,
+                0.0f, 0.0f, -1.0f,
+                0.0f, 0.0f, -1.0f,
 
-                        // Left face
-                        -1.0f, 0.0f, 0.0f,
-                        -1.0f, 0.0f, 0.0f,
-                        -1.0f, 0.0f, 0.0f,
-                        -1.0f, 0.0f, 0.0f,
-                        -1.0f, 0.0f, 0.0f,
-                        -1.0f, 0.0f, 0.0f,
+                // Left face
+                -1.0f, 0.0f, 0.0f,
+                -1.0f, 0.0f, 0.0f,
+                -1.0f, 0.0f, 0.0f,
+                -1.0f, 0.0f, 0.0f,
+                -1.0f, 0.0f, 0.0f,
+                -1.0f, 0.0f, 0.0f,
 
-                        // Top face
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
+                // Top face
+                0.0f, 1.0f, 0.0f,
+                0.0f, 1.0f, 0.0f,
+                0.0f, 1.0f, 0.0f,
+                0.0f, 1.0f, 0.0f,
+                0.0f, 1.0f, 0.0f,
+                0.0f, 1.0f, 0.0f,
 
-                        // Bottom face
-                        0.0f, -1.0f, 0.0f,
-                        0.0f, -1.0f, 0.0f,
-                        0.0f, -1.0f, 0.0f,
-                        0.0f, -1.0f, 0.0f,
-                        0.0f, -1.0f, 0.0f,
-                        0.0f, -1.0f, 0.0f
-                };
+                // Bottom face
+                0.0f, -1.0f, 0.0f,
+                0.0f, -1.0f, 0.0f,
+                0.0f, -1.0f, 0.0f,
+                0.0f, -1.0f, 0.0f,
+                0.0f, -1.0f, 0.0f,
+                0.0f, -1.0f, 0.0f
+        };
 
         // Initialize the buffers.
         mCubePositions = ByteBuffer.allocateDirect(cubePositionData.length * 4)
@@ -318,7 +329,7 @@ public class IntroToLightingRenderer implements GLSurfaceView.Renderer {
 
         pointProgramId = ShaderUtils.createProgram(vertexShader, fragmentShader);
 
-        aPointPositionLocation =glGetAttribLocation(pointProgramId, "a_Position");
+        aPointPositionLocation = glGetAttribLocation(pointProgramId, "a_Position");
         uPiontMVPMatrixLocation = glGetUniformLocation(pointProgramId, "u_MVPMatrix");
     }
 
@@ -332,6 +343,22 @@ public class IntroToLightingRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 gl) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        float p;
+        if (camera.height < camera.width) {
+            p = (float) camera.height;
+        } else {
+            p = (float) camera.width;
+        }
+
+        float dX = accumulateX.getAndSet(0) / p;
+        float dY = accumulateY.getAndSet(0) / p;
+
+        camera.eyeX += dX;
+        camera.eyeY += dY;
+
+        camera.updateViewMatrix();
+        camera.updateVPMatrix();
 
         long time = SystemClock.uptimeMillis() % 10000;
         float angle = (float) time / 10000f * 360f;
@@ -430,27 +457,14 @@ public class IntroToLightingRenderer implements GLSurfaceView.Renderer {
 
         // Draw the cube.
         glDrawArrays(GLES20.GL_TRIANGLES, 0, 36);
-
     }
 
+    private AtomicInteger accumulateX = new AtomicInteger(0);
+    private AtomicInteger accumulateY = new AtomicInteger(0);
+
     public void rotateCam(float dx, float dy) {
-        float p ;
-        synchronized (camera) {
-            if (camera.height < camera.width) {
-                p = (float) camera.height;
-            } else {
-                p = (float) camera.width;
-            }
-
-            Log.d("Change cam", "Before x: " + camera.eyeX + " y: " + camera.eyeY);
-            Log.d("Change cam", "dx: " + dx / p + " dy: " + dy / p);
-            camera.eyeX += dx / p;
-            camera.eyeY += dy / p;
-            Log.d("Change cam", "After x: " + camera.eyeX + " y: " + camera.eyeY);
-
-            camera.updateViewMatrix();
-            camera.updateVPMatrix();
-        }
+        accumulateX.addAndGet(Math.round(dx));
+        accumulateY.addAndGet(Math.round(dy));
     }
 
     public int getHeight() {

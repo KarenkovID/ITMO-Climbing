@@ -10,6 +10,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.concurrent.TimeUnit;
+
 import ru.climbing.itmo.itmoclimbing.graphicPart.renderers.IntroToLightingRenderer;
 
 
@@ -78,11 +80,6 @@ public class GLActivity extends Activity implements View.OnTouchListener{
                 Log.d(TAG, "ACTION_MOVE x: " + event.getX() + "; y: " + event.getY());
                 float dx = event.getX() - prevX;
                 float dy = event.getY() - prevY;
-//                try {
-//                    Thread.currentThread().sleep(2000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
                 renderer.rotateCam(dx, -dy);
                 return true;
             case MotionEvent.ACTION_CANCEL:
