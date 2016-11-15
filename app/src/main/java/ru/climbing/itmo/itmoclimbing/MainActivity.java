@@ -12,6 +12,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+
+import com.facebook.stetho.Stetho;
 
 import ru.climbing.itmo.itmoclimbing.graphicPart.GLActivity;
 
@@ -29,7 +32,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, GLActivity.class);
+                Intent intent = new Intent(MainActivity.this, PersonInfoActivity.class);
 
                 if (intent != null) {
                     startActivity(intent);
@@ -47,6 +50,16 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        Button btn = (Button)findViewById(R.id.button);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, PersonInfoActivity.class);
+
+                startActivity(intent);
+            }
+        });
+        Stetho.initializeWithDefaults(this);
     }
 
     @Override
