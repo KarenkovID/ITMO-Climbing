@@ -6,11 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class Festival extends Fragment {
+import ru.climbing.itmo.itmoclimbing.R;
+
+public class FestivalFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.festival, container, false);
+        return inflater.inflate(R.layout.festival_fragment, container, false);
     }
 }

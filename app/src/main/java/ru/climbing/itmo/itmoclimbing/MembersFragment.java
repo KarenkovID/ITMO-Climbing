@@ -6,13 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import ru.climbing.itmo.itmoclimbing.R;
-
-public class Routs extends Fragment {
+public class MembersFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.routs, container, false);
+        return inflater.inflate(R.layout.members_fragment, container, false);
     }
 }
