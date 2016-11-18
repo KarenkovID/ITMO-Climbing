@@ -9,11 +9,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
 public class LoginActivity extends AppCompatActivity {
-    private int numPages = 3;
 
     private ViewPager viewPager;
 
-    private PagerAdapter pagerAdapter;
+    public ScreenSlidePagerAdapter pagerAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,8 +27,9 @@ public class LoginActivity extends AppCompatActivity {
 //        }
 
         viewPager = (ViewPager) findViewById(R.id.pagerContainer);
-        pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+        pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), viewPager);
         viewPager.setAdapter(pagerAdapter);
+        viewPager.setOffscreenPageLimit(1);
     }
 
     @Override
@@ -44,21 +44,55 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
-        public ScreenSlidePagerAdapter(FragmentManager fm) {
+    public static class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
+        public static final int SIGN_IN = 1, SIGN_UP = 2;
+        private SignInFragment signInFragment = new SignInFragment();
+        private SignUpFragment signUpFragment = new SignUpFragment();
+        private LoginFragment loginFragment = new LoginFragment(this);
+        private Fragment curSecondFragment;
+        private int curSecondPageType = 0;
+
+        private int numPages = 1;
+
+        public ViewPager pager;
+
+
+        public ScreenSlidePagerAdapter(FragmentManager fm, ViewPager pager) {
             super(fm);
+            this.pager = pager;
+        }
+        //TODO: do it more efficient
+        @Override
+        public int getItemPosition(Object object) {
+            if (object == loginFragment) {
+                return POSITION_UNCHANGED;
+            }
+            return POSITION_NONE;
         }
 
+        public void prepareFragment(int type) {
+            if (numPages == 1) {
+                numPages++;
+            }
+            //If requested page == current page
+            if (type != curSecondPageType) {
+                curSecondPageType = type;
+                if (curSecondPageType == SIGN_IN) {
+                    curSecondFragment = signInFragment;
+                } else {
+                    curSecondFragment = signUpFragment;
+                }
+                notifyDataSetChanged();
+            }
+            pager.setCurrentItem(1, true);
+        }
 
         @Override
         public Fragment getItem(int position) {
-            switch (position) {
-                case 1:
-                    return new SignInFragment();
-                case 2:
-                    return new SignUpFragment();
+            if (position == 1) {
+                return curSecondFragment;
             }
-            return new LoginFragment();
+            return loginFragment;
         }
 
         @Override

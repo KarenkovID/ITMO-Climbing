@@ -1,17 +1,24 @@
 package ru.climbing.itmo.itmoclimbing;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+@SuppressLint("ValidFragment")
 public class LoginFragment extends Fragment implements View.OnClickListener{
 
-    public LoginFragment() {
+    LoginActivity.ScreenSlidePagerAdapter adapter;
+
+    public LoginFragment(LoginActivity.ScreenSlidePagerAdapter adapter) {
+        this.adapter = adapter;
+
     }
 
     @Override
@@ -35,10 +42,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button_login:
-
+                adapter.prepareFragment(adapter.SIGN_IN);
                 break;
             case R.id.button_register:
-
+                adapter.prepareFragment(adapter.SIGN_UP);
                 break;
         }
     }
