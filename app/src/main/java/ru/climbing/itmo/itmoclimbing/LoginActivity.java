@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 
+import java.lang.reflect.Field;
+
 public class LoginActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
@@ -52,10 +54,10 @@ public class LoginActivity extends AppCompatActivity {
         private SignInFragment signInFragment = new SignInFragment();
         private SignUpFragment signUpFragment = new SignUpFragment();
         private LoginFragment loginFragment = new LoginFragment(this);
-        private Fragment curSecondFragment;
-        private int curSecondPageType = 0;
+        private Fragment curSecondFragment = signInFragment;
+        private int curSecondPageType = 1;
 
-        private int numPages = 1;
+        private int numPages = 2;
 
         public ViewPager pager;
 
@@ -74,9 +76,6 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         public void prepareFragment(int type) {
-            if (numPages == 1) {
-                numPages++;
-            }
             //If requested page == current page
             if (type != curSecondPageType) {
                 curSecondPageType = type;
