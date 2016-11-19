@@ -3,27 +3,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/mountains" />
+
     <LinearLayout
         style="?android:attr/buttonBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="#4f000000"
+        android:padding="20dp">
 
         <Button
             android:id="@+id/button_login"
-            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="LOGIN"/>
+            android:textColor="@color/colorAccent"
+            android:text="LOGIN" />
 
         <Button
             android:id="@+id/button_register"
-            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:textColor="@color/colorAccent"
             android:text="REGISTRATION" />
 
     </LinearLayout>

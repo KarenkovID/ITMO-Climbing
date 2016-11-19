@@ -1,95 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="40dp">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="FirstName"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-
-    <EditText
-        android:id="@+id/firstNameETxt"
+    android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/mountains2" />
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:hint="Dmitriy" />
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:background="#4f000000"
+        android:padding="20dp"
+        android:layout_margin="10dp">
 
-    <TextView
-        android:text="SecondName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView2"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="FirstName"
+            android:textColor="@color/colorAccent"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-    <EditText
-        android:id="@+id/lastNameETxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:hint="Krizanovskiy"
-        android:ems="10"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        />
+        <EditText
+            android:id="@+id/firstNameETxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Dmitriy"
+            android:inputType="textPersonName"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
-    <TextView
-        android:text="Login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:id="@+id/textView3" />
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="SecondName"
+            android:textColor="@color/colorAccent"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-    <EditText
-        android:id="@+id/newLoginETxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:hint="limon" />
+        <EditText
+            android:id="@+id/lastNameETxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Krizanovskiy"
+            android:inputType="textPersonName"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:text="Password" />
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Login"
+            android:textColor="@color/colorAccent"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-    <EditText
-        android:id="@+id/newPasswordETxt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:hint="password" />
+        <EditText
+            android:id="@+id/newLoginETxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="limon"
+            android:inputType="textPersonName"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Password"
+            android:textColor="@color/colorAccent"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+        <EditText
+            android:id="@+id/newPasswordETxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="password"
+            android:inputType="textPassword"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:text="Confirm password" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Confirm password"
+            android:textColor="@color/colorAccent"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-    <EditText
-        android:id="@+id/confirmNewPasswordETxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:hint="password"
-        />
+        <EditText
+            android:id="@+id/confirmNewPasswordETxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="password"
+            android:inputType="textPassword"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
-    <Button
-        android:id="@+id/registrationBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="REGISTRATION" />
+        <Button
+            android:id="@+id/registrationBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorAccent"
+            android:text="REGISTRATION" />
 
-</LinearLayout>
+    </LinearLayout>
+</FrameLayout>

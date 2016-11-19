@@ -7,6 +7,8 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ImageView;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -30,6 +32,7 @@ public class LoginActivity extends AppCompatActivity {
         pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), viewPager);
         viewPager.setAdapter(pagerAdapter);
         viewPager.setOffscreenPageLimit(1);
+        viewPager.setPageTransformer(false, new ParallaxPageTransformer());
     }
 
     @Override
@@ -98,6 +101,31 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             return numPages;
+        }
+    }
+    public class ParallaxPageTransformer implements ViewPager.PageTransformer {
+        
+
+        public void transformPage(View view, float position) {
+
+            int pageWidth = view.getWidth();
+
+
+            if (position < -1) { // [-Infinity,-1)
+                // This page is way off-screen to the left.
+                view.setAlpha(1);
+
+            } else if (position <= 1) { // [-1,1]
+
+                ImageView background= (ImageView)view.findViewById(R.id.backgroundImage);
+                background.setTranslationX(-position * (pageWidth / 2)); //Half the normal speed
+
+            } else { // (1,+Infinity]
+                // This page is way off-screen to the right.
+                view.setAlpha(1);
+            }
+
+
         }
     }
 }
