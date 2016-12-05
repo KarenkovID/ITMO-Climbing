@@ -1,4 +1,4 @@
-package ru.climbing.itmo.itmoclimbing;
+package ru.climbing.itmo.itmoclimbing.fragments;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -10,6 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import ru.climbing.itmo.itmoclimbing.LoginActivity;
+import ru.climbing.itmo.itmoclimbing.R;
 
 @SuppressLint("ValidFragment")
 public class LoginFragment extends Fragment implements View.OnClickListener{

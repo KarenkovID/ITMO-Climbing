@@ -1,4 +1,4 @@
-package ru.climbing.itmo.itmoclimbing;
+package ru.climbing.itmo.itmoclimbing.fragments;
 
 /**
  * Created by macbook on 15.11.16.
@@ -8,6 +8,8 @@ import android.os.Bundle;
         import android.view.LayoutInflater;
         import android.view.View;
         import android.view.ViewGroup;
+
+import ru.climbing.itmo.itmoclimbing.R;
 
 public class ProfileFragment extends Fragment {
 

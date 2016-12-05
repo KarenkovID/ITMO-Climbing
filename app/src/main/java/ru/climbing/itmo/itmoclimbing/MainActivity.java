@@ -18,12 +18,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.facebook.stetho.Stetho;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import ru.climbing.itmo.itmoclimbing.fragments.FestivalFragment;
+import ru.climbing.itmo.itmoclimbing.fragments.MembersFragment;
+import ru.climbing.itmo.itmoclimbing.fragments.ProfileFragment;
+import ru.climbing.itmo.itmoclimbing.fragments.RoutesFragment;
 import ru.climbing.itmo.itmoclimbing.graphicPart.GLActivity;
 
 public class MainActivity extends AppCompatActivity
@@ -125,7 +127,7 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment = null;
         Class fragmentClass = null;
         if (id == R.id.nav_routs) {
-            fragmentClass = RoutsFragment.class;
+            fragmentClass = RoutesFragment.class;
             // Handle the camera action
         } else if (id == R.id.nav_members) {
             fragmentClass = MembersFragment.class;
