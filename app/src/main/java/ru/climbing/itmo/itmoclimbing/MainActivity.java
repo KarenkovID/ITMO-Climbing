@@ -49,8 +49,6 @@ public class MainActivity extends AppCompatActivity
                 if (intent != null) {
                     startActivity(intent);
                 }
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
             }
         });
 
@@ -128,7 +126,6 @@ public class MainActivity extends AppCompatActivity
         Class fragmentClass = null;
         if (id == R.id.nav_routs) {
             fragmentClass = RoutesFragment.class;
-            // Handle the camera action
         } else if (id == R.id.nav_members) {
             fragmentClass = MembersFragment.class;
         } else if (id == R.id.nav_festival) {

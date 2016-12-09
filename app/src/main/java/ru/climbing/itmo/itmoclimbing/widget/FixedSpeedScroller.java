@@ -1,4 +1,4 @@
-package ru.climbing.itmo.itmoclimbing;
+package ru.climbing.itmo.itmoclimbing.widget;
 
 import android.content.Context;
 import android.view.animation.Interpolator;

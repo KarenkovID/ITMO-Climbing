@@ -5,19 +5,19 @@
         <item
             android:id="@+id/nav_routs"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Routs" />
+            android:title="@string/routes"/>
         <item
             android:id="@+id/nav_members"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Members" />
+            android:title="@string/members" />
         <item
             android:id="@+id/nav_festival"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Festival" />
+            android:title="@string/festival" />
         <item
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Profile" />
+            android:title="@string/profile" />
     </group>
 
     <item android:title="Communicate">
