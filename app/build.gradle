@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId "ru.climbing.itmo.itmoclimbing"
         minSdkVersion 19
-        targetSdkVersion 24
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -34,5 +34,7 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:1.3.0'
     compile 'com.facebook.stetho:stetho-urlconnection:1.4.1'
     compile 'com.facebook.stetho:stetho:1.4.1'
+    compile 'com.android.support:support-annotations:25.0.1'
+    compile 'com.android.support:percent:24.2.1'
     testCompile 'junit:junit:4.12'
 }

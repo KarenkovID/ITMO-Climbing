@@ -2,6 +2,7 @@ package ru.climbing.itmo.itmoclimbing.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -29,7 +30,6 @@ public class RoutesFragment extends Fragment implements
         SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = RoutesFragment.class.getSimpleName();
 
-    private View rootView;
     private RecyclerView rvRoutes;
     private ProgressBar progressBar;
     private RoutesRecyclerAdapter recyclerAdapter;
@@ -40,21 +40,28 @@ public class RoutesFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.routes_fragment, container, false);
+        return  inflater.inflate(R.layout.routes_fragment, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View rootView, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(rootView, savedInstanceState);
+
         rvRoutes = (RecyclerView) rootView.findViewById(R.id.rvRoutes);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         tvErrorMessage = (TextView) rootView.findViewById(R.id.tvError);
+
         recyclerAdapter = new RoutesRecyclerAdapter(getContext());
         rvRoutes.setAdapter(recyclerAdapter);
         rvRoutes.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        progressBar.setVisibility(View.VISIBLE);
+
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         // делаем повеселее
         mSwipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED);
-
-
-        return rootView;
     }
 
     @Override
