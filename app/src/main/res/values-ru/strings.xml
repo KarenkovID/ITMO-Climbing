@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="no_internet">Отсутствует соединение с интернетом</string>
+    <string name="error">Ошибка</string>
+    <string name="routes">Трассы</string>
+    <string name="members">Люди</string>
+    <string name="festival">Фестиваль</string>
+    <string name="profile">Профиль</string>
+</resources>
