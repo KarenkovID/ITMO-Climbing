@@ -17,11 +17,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    compileOptions {
-        targetCompatibility JavaVersion.VERSION_1_8
-        sourceCompatibility JavaVersion.VERSION_1_8
-
-    }
 }
 
 dependencies {
@@ -42,6 +37,7 @@ dependencies {
     compile 'com.android.support:support-annotations:25.0.1'
     compile 'com.android.support:percent:24.2.1'
     testCompile 'junit:junit:4.12'
+
     testCompile 'junit:junit:4.12'
 
     def solidVersion = '3.0.1'
