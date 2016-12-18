@@ -1,4 +1,4 @@
-package ru.climbing.itmo.itmoclimbing.cache;
+package ru.climbing.itmo.itmoclimbing.cache.utils;
 
 /**
  * Created by macbook on 16.12.16.
