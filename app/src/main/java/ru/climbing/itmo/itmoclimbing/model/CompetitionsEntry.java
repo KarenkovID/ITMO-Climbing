@@ -1,14 +1,16 @@
 package ru.climbing.itmo.itmoclimbing.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 
-public class CompetitionsEntry {
+public class CompetitionsEntry implements Parcelable{
 
     @NonNull
-    public final String competitionName;
+    public String competitionName;
 
     @NonNull
     public String competitionType;
@@ -33,5 +35,6 @@ public class CompetitionsEntry {
         this.competitionRoutes = competitionRoutes;
         this.competitors = competitors;
     }
+
 
 }

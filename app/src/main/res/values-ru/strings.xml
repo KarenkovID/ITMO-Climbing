@@ -6,4 +6,9 @@
     <string name="members">Люди</string>
     <string name="festival">Фестиваль</string>
     <string name="profile">Профиль</string>
+    <string name="competitions_manager">Менеджер соревнований</string>
+    <string name="new_competition">Новое соревнование</string>
+    <string name="hint_competition_name">Название соревнования</string>
+    <string name="create">Создать</string>
+    <string name="cancel">Отмена</string>
 </resources>
