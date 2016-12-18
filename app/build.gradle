@@ -37,4 +37,13 @@ dependencies {
     compile 'com.android.support:support-annotations:25.0.1'
     compile 'com.android.support:percent:24.2.1'
     testCompile 'junit:junit:4.12'
+
+    testCompile 'junit:junit:4.12'
+
+    def solidVersion = '3.0.1'
+    compile "info.android15.solid:streams:$solidVersion"
+    compile "info.android15.solid:collections:$solidVersion"
+
+    compile 'com.facebook.stetho:stetho:1.4.1'
+    compile 'com.facebook.stetho:stetho-urlconnection:1.4.1'
 }
