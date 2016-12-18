@@ -15,11 +15,30 @@ import ru.climbing.itmo.itmoclimbing.model.CompetitorEntry;
  */
 
 public class CompParse {
+
+    public static String parseCompRoutesToString(ArrayList<CompetitionsRoutesEntry> arr) {
+        JSONArray obj = new JSONArray(arr);
+        return arr.toString();
+    }
+
+    public static String parseCompetitorsToString(ArrayList<CompetitorEntry> arr) {
+        JSONArray obj = new JSONArray(arr);
+        return arr.toString();
+    }
+
+
     public static ArrayList<CompetitionsRoutesEntry> parseCompRoutesToArray(String content) throws
             JSONException,
             BadResponseException {
         final JSONArray json = new JSONArray(content);
         return parseCompRoutesToArray(json);
+    }
+
+    public static ArrayList<CompetitorEntry> parseCompetitorsToArray(String content) throws
+            JSONException,
+            BadResponseException {
+        final JSONArray json = new JSONArray(content);
+        return parseCompetitorsToArray(json);
     }
 
     private static ArrayList<CompetitionsRoutesEntry> parseCompRoutesToArray(JSONArray json) throws
@@ -35,12 +54,6 @@ public class CompParse {
         return resultArray;
     }
 
-    public static ArrayList<CompetitorEntry> parseCompetitorsToArray(String content) throws
-            JSONException,
-            BadResponseException {
-        final JSONArray json = new JSONArray(content);
-        return parseCompetitorsToArray(json);
-    }
 
     private static ArrayList<CompetitorEntry> parseCompetitorsToArray(JSONArray json) throws
             JSONException, BadResponseException {
