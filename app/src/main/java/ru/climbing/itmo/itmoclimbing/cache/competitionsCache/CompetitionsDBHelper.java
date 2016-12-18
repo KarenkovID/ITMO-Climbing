@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import ru.climbing.itmo.itmoclimbing.cache.DBCorruptionHandler;
 
 import static ru.climbing.itmo.itmoclimbing.cache.competitionsCache.CompetitionsCacheContract.CompetitionsCached.COMPETITIONS_TABLE;
+import static ru.climbing.itmo.itmoclimbing.cache.competitionsCache.CompetitionsCacheContract.CompetitionsCached.CREATE_COMPETITIONS_TABLE;
 
 /**
  * Created by macbook on 16.12.16.
@@ -35,9 +36,8 @@ public class CompetitionsDBHelper extends SQLiteOpenHelper {
         return instance;
     }
     @Override
-
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(COMPETITIONS_TABLE);
+        db.execSQL(CREATE_COMPETITIONS_TABLE);
     }
 
     @Override

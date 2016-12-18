@@ -70,7 +70,7 @@ public class CompetitionsCache {
                     String competitionName = cursor.getString(0);
                     String competitionType = cursor.getString(1);
                     String isActive = cursor.getString(2);
-                    String competitionsRoutes = cursor.getString(3);
+                    ArrayList<String> competitionsRoutes = (cursor.getString(3));
                     String competitors = cursor.getString(4);
                     comptable.add(new CompetitionsEntry(competitionName, competitionType,
                             isActive, competitionsRoutes, competitors));
