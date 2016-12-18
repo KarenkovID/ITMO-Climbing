@@ -12,14 +12,14 @@ public class CompetitionsRoutesEntry {
     public final String routeName;
 
     @NonNull
-    public final String routeLevel;
+    public final double routeFactor;
 
     @NonNull
     public final int id;
 
-    public CompetitionsRoutesEntry(@NonNull String routeName, @NonNull String routeLevel, @NonNull int id) {
+    public CompetitionsRoutesEntry(@NonNull String routeName, @NonNull double routeFactor, @NonNull int id) {
         this.routeName = routeName;
-        this.routeLevel = routeLevel;
+        this.routeFactor = routeFactor;
         this.id = id;
     }
 }

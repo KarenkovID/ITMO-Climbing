@@ -12,12 +12,11 @@ final class CompetitionsCacheContract {
 
         String COMPETITION_NAME = "competition_name";
         String COMPETITION_TYPE = "competition_type";
-        String COMPETITION_TIME = "competition_time";
         String IS_ACTIVE = "is_active";
+        String COMPETITION_ROUTES = "competition_routes";
+        String COMPETITORS = "competitors";
 
-        String COMPETITION_COMPONENTS[] = {COMPETITION_NAME, COMPETITION_TYPE, COMPETITION_TIME, IS_ACTIVE};
-
-
+        String COMPETITION_COMPONENTS[] = {COMPETITION_NAME, COMPETITION_TYPE, IS_ACTIVE, COMPETITION_ROUTES, COMPETITORS};
 
 
     }
@@ -28,8 +27,9 @@ final class CompetitionsCacheContract {
                 + " ("
                 + COMPETITION_NAME + " TEXT, "
                 + COMPETITION_TYPE + " TEXT, "
-                + COMPETITION_TIME + " INTEGER, "
-                + IS_ACTIVE + " BIT" // TODO if doesn't work change on int value
+                + IS_ACTIVE + " TEXT, "
+                + COMPETITION_ROUTES + " TEXT, "
+                + COMPETITORS + " TEXT"
                 + ")";
     }
 

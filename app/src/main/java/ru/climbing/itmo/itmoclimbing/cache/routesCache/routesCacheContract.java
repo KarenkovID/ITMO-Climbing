@@ -8,7 +8,7 @@ import android.provider.BaseColumns;
 
 final class RoutesCacheContract {
 
-    private interface routsCacheColumns extends BaseColumns {
+    public interface routsCacheColumns extends BaseColumns {
 
         String ROUTE_NAME = "route_name";
         String ROUTE_LEVEL = "route_level";
@@ -23,7 +23,7 @@ final class RoutesCacheContract {
         static final String CREATE_ROUTES_TABLE = "CREATE TABLE " + ROUTES_TABLE
                 + " ("
                 + ROUTE_NAME + " TEXT, "
-                + ROUTE_LEVEL + " TEXT, "
+                + ROUTE_LEVEL + " REAL, "
                 + ROUTE_ID + " INTEGER"
                 + ")";
     }
