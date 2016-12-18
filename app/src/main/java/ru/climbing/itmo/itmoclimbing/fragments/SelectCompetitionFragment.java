@@ -2,6 +2,7 @@ package ru.climbing.itmo.itmoclimbing.fragments;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 
 import ru.climbing.itmo.itmoclimbing.R;
 import ru.climbing.itmo.itmoclimbing.callbacks.NoticeDialogListener;
+import ru.climbing.itmo.itmoclimbing.model.CompetitionsEntry;
 
 /**
  * Created by Игорь on 16.12.2016.
@@ -29,11 +31,12 @@ public class SelectCompetitionFragment extends Fragment implements
     private FloatingActionButton fabAddCompetition;
     private DialogFragment mAddCompetitionDialog;
 
-    private ArrayList mCompetitionsData;
+    private ArrayList<CompetitionsEntry> mCompetitionsList;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mCompetitionsList = new ArrayList<CompetitionsEntry>();
         return inflater.inflate(R.layout.fragment_competitions_manager, container, false);
     }
 
@@ -66,8 +69,16 @@ public class SelectCompetitionFragment extends Fragment implements
         addCompetition(competitionName);
     }
 
-    private void addCompetition(String competitionName) {
-        //TODO
+    /**
+     * Вызывается, если мы отменили создание трассы
+     */
+    @Override
+    public void onDialogNegativeClick() {
+
+    }
+
+    private void addCompetition(@NonNull String competitionName) {
+        mCompetitionsList.add(new CompetitionsEntry(competitionName, "", true, null, null));
     }
 
 }

@@ -6,4 +6,5 @@ package ru.climbing.itmo.itmoclimbing.callbacks;
 
 public interface NoticeDialogListener<T> {
     void onDialogPositiveClick(T data);
+    void onDialogNegativeClick();
 }
