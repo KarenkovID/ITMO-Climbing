@@ -23,37 +23,54 @@ public class CompParse {
     private static final String RESULT_TAG = "result";
 
     public static String parseCompRoutesToString(ArrayList<CompetitionsRoutesEntry> arr) throws JSONException {
+
         JSONArray jsonArrayRes = new JSONArray();
+
         for (int i = 0; i < arr.size(); i++) {
+
             JSONObject jsonObjectRoute = new JSONObject();
+
             jsonObjectRoute.put(ROUTE_NAME_TAG, arr.get(i).routeName);
             jsonObjectRoute.put(ROUTE_FACTOR_TAG, arr.get(i).routeFactor);
             jsonObjectRoute.put(ROUTE_ID_TAG, arr.get(i).id);
             jsonObjectRoute.put(ROUTE_COUNT_TAG, arr.get(i).count);
             jsonArrayRes.put(jsonObjectRoute);
         }
+
         return jsonArrayRes.toString();
     }
 
     public static String parseCompetitorsToString(ArrayList<CompetitorEntry> arr) throws JSONException {
         JSONArray jsonArrayRes = new JSONArray();
         for (int i = 0; i < arr.size(); i++) {
+
             JSONObject jsonObjectCompetitor = new JSONObject();
-            jsonObjectCompetitor.put(COMPETITOR_NAME_TAG, arr.get(i).competitorName);
+
             int sz = arr.get(i).competitorsRouteData.size();
             JSONArray jsonArrayCompetitorData = new JSONArray();
+
             for (int j = 0; j < sz; j++) {
+
                 JSONObject jsonObjectCompetitorData = new JSONObject();
-                jsonObjectCompetitorData.put(RESULT_TAG, arr.get(i).competitorsRouteData.get(j).getResult());
-                jsonObjectCompetitorData.put(START_POSITION_TAG, arr.get(i).competitorsRouteData.get(j).getStartPosition());
+
                 ArrayList<CompetitionsRoutesEntry> temp = new ArrayList<>();
                 temp.add(arr.get(i).competitorsRouteData.get(j).getRoutesEntry());
+
                 jsonObjectCompetitorData.put(ROUTES_ENTRY_TAG, parseCompRoutesToString(temp));
+                jsonObjectCompetitorData.put(START_POSITION_TAG, arr.get(i).competitorsRouteData
+                        .get(j).getStartPosition());
+                jsonObjectCompetitorData.put(RESULT_TAG, arr.get(i).competitorsRouteData
+                        .get(j).getResult());
+
                 jsonArrayCompetitorData.put(jsonObjectCompetitorData);
             }
+
+            jsonObjectCompetitor.put(COMPETITOR_NAME_TAG, arr.get(i).competitorName);
             jsonObjectCompetitor.put(COMPETITORS_ROUTE_DATA_TAG, jsonArrayCompetitorData);
+
             jsonArrayRes.put(jsonObjectCompetitor);
         }
+
         return jsonArrayRes.toString();
     }
 
@@ -74,15 +91,21 @@ public class CompParse {
 
     private static ArrayList<CompetitionsRoutesEntry> parseCompRoutesToArray(JSONArray json) throws
             JSONException {
+
         final ArrayList<CompetitionsRoutesEntry> resultArray = new ArrayList<>(json.length());
+
         for (int i = 0; i < json.length(); ++i) {
+
             JSONObject movieJson = json.getJSONObject(i);
+
             final String name = movieJson.getString(ROUTE_NAME_TAG);
             final double author = movieJson.getDouble(ROUTE_FACTOR_TAG);
             final int description = movieJson.getInt(ROUTE_ID_TAG);
             final int count = movieJson.getInt(ROUTE_COUNT_TAG);
+
             resultArray.add(new CompetitionsRoutesEntry(name, author, description, count));
         }
+
         return resultArray;
     }
 
@@ -90,21 +113,35 @@ public class CompParse {
     private static ArrayList<CompetitorEntry> parseCompetitorsToArray(JSONArray json) throws
             JSONException, BadResponseException {
         final ArrayList<CompetitorEntry> resultArray = new ArrayList<>(json.length());
+
         for (int i = 0; i < json.length(); ++i) {
-            JSONObject movieJson = json.getJSONObject(i);
-            final String name = movieJson.getString(COMPETITOR_NAME_TAG);
-            final String author = movieJson.getString(COMPETITORS_ROUTE_DATA_TAG);
-            final JSONArray json2 = new JSONArray(author);
-            final ArrayList<CompetitorEntry.CompetitorsRouteData> resultArray2 = new ArrayList<>(json2.length());
-            for (int j = 0; j < json2.length(); j++) {
-                JSONObject movieJson2 = json2.getJSONObject(j);
-                final int startPosition = movieJson2.getInt(START_POSITION_TAG);
-                final int result = movieJson2.getInt(RESULT_TAG);
-                final ArrayList<CompetitionsRoutesEntry> cre = parseCompRoutesToArray(movieJson2.getString(ROUTES_ENTRY_TAG));
-                resultArray2.add(new CompetitorEntry.CompetitorsRouteData(cre.get(0), startPosition, result));
+
+            JSONObject jsonCompetitorEntry = json.getJSONObject(i);
+
+            final String competitorName = jsonCompetitorEntry.getString(COMPETITOR_NAME_TAG);
+            final String competitorData = jsonCompetitorEntry.getString(COMPETITORS_ROUTE_DATA_TAG);
+
+            final JSONArray jsonCompetitorDataArray = new JSONArray(competitorData);
+            final ArrayList<CompetitorEntry.CompetitorsRouteData> competitorDataArray
+                    = new ArrayList<>(jsonCompetitorDataArray.length());
+
+            for (int j = 0; j < jsonCompetitorDataArray.length(); j++) {
+
+                JSONObject jsonCompetitorDataObject = jsonCompetitorDataArray.getJSONObject(j);
+
+                final int startPosition = jsonCompetitorDataObject.getInt(START_POSITION_TAG);
+                final int result = jsonCompetitorDataObject.getInt(RESULT_TAG);
+                final ArrayList<CompetitionsRoutesEntry> competitionsRoutesEntries =
+                        parseCompRoutesToArray(jsonCompetitorDataObject.getString(ROUTES_ENTRY_TAG));
+
+                competitorDataArray.add(new CompetitorEntry.CompetitorsRouteData(
+                        competitionsRoutesEntries.get(0),
+                        startPosition, result));
             }
-            resultArray.add(new CompetitorEntry(name, resultArray2));
+
+            resultArray.add(new CompetitorEntry(competitorName, competitorDataArray));
         }
+
         return resultArray;
     }
 }

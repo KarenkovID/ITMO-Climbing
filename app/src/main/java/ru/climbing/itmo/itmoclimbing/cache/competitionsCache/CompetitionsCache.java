@@ -39,7 +39,7 @@ public class CompetitionsCache {
     private final Context context;
 
 
-    private void getEntry(SQLiteStatement insert, CompetitionsEntry entry) {
+    private void getEntry(SQLiteStatement insert, CompetitionsEntry entry) throws JSONException {
         insert.bindString(1, entry.competitionName);
         insert.bindString(2, entry.competitionType);
         insert.bindLong(3, entry.isActive ? 1 : 0);
@@ -110,6 +110,8 @@ public class CompetitionsCache {
                 insert.executeInsert();
             }
             db.setTransactionSuccessful();
+        } catch (JSONException e) {
+            e.printStackTrace();
         } finally {
             db.endTransaction();
         }
