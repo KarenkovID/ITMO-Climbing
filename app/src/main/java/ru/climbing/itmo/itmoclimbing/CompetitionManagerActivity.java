@@ -22,9 +22,9 @@ public class CompetitionManagerActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         //Если фрагмент не добавлен.
         //Нужно проверять, т.к. мы предыдущее состояние может быть восстановлено
-        if (fragmentManager.findFragmentById(R.id.fragmentCompetitionManager) == null) {
+        if (fragmentManager.findFragmentByTag(SelectCompetitionFragment.TAG) == null) {
             fragmentManager.beginTransaction()
-                    .replace(R.id.container, new SelectCompetitionFragment())
+                    .replace(R.id.container, new SelectCompetitionFragment(), SelectCompetitionFragment.TAG)
                     .addToBackStack(null)
                     .commit();
         }

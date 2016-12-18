@@ -40,7 +40,7 @@ public class CompetitionsCache {
     private void getEntry(SQLiteStatement insert, CompetitionsEntry entry) {
         insert.bindString(1, entry.competitionName);
         insert.bindString(2, entry.competitionType);
-        insert.bindString(3, entry.isActive);
+        insert.bindString(3, String.valueOf(entry.isActive));
     }
 
     @AnyThread
@@ -69,11 +69,11 @@ public class CompetitionsCache {
                 for (; !cursor.isAfterLast(); cursor.moveToNext()) {
                     String competitionName = cursor.getString(0);
                     String competitionType = cursor.getString(1);
-                    String isActive = cursor.getString(2);
+                    boolean isActive = Boolean.valueOf(cursor.getString(2));
                     String competitionsRoutes = cursor.getString(3);
                     String competitors = cursor.getString(4);
                     comptable.add(new CompetitionsEntry(competitionName, competitionType,
-                            isActive, competitionsRoutes, competitors));
+                            isActive, null, null));
                 }
             } else {
                 throw new FileNotFoundException("!!!");
