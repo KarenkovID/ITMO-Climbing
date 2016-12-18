@@ -30,8 +30,7 @@ public final class RoutesDOMParser {
         final ArrayList<Route> resultArray = new ArrayList<Route>(json.length());
         for (int i = 0; i < json.length(); ++i) {
             JSONObject movieJson = json.getJSONObject(i);
-            final String name = movieJson.getString("name");
-//            final String grade = movieJson.getString("grade");
+            final String name = movieJson.getString("competitionName");
             final String author = movieJson.getString("author");
             final String description = movieJson.getString("description");
             resultArray.add(new Route(name, "8a", author, description));

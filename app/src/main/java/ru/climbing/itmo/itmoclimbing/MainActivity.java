@@ -1,6 +1,7 @@
 package ru.climbing.itmo.itmoclimbing;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -132,10 +133,9 @@ public class MainActivity extends AppCompatActivity
             fragmentClass = FestivalFragment.class;
         } else if (id == R.id.nav_profile) {
             fragmentClass = ProfileFragment.class;
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_logout) {
-            fragmentClass = LogOut.class;
+        } else if (id == R.id.competitions_manager) {
+            Intent intent = new Intent(this, CompetitionManagerActivity.class);
+            startActivity(intent);
         }
         if (fragmentClass == null) {
             return false;
