@@ -1,13 +1,9 @@
 package ru.climbing.itmo.itmoclimbing.model;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-
-/**
- * Created by macbook on 16.12.16.
- */
 
 public class CompetitionsEntry {
 
@@ -15,34 +11,27 @@ public class CompetitionsEntry {
     public final String competitionName;
 
     @NonNull
-    public final String competitionType;
+    public String competitionType;
 
     @NonNull
-    public final Calendar competitionTime;
+    public boolean isActive;
 
     @NonNull
-    public final String isActive;
+    public  ArrayList<String> competitionRoutes;
 
     @NonNull
-    ArrayList<CompetitionsRoutesEntry> competitionsRoutes;
-
-    @NonNull
-    ArrayList<CompetitorEntry> competitors;
+    public ArrayList<String> competitors;
 
     public CompetitionsEntry(@NonNull String competitionName,
                              @NonNull String competitionType,
-                             @NonNull Calendar competitionTime,
-                             @NonNull String isActive,
-                             ArrayList<CompetitionsRoutesEntry> competitionsRoutes,
-                             ArrayList<CompetitorEntry> competitors) {
+                             boolean isActive,
+                             @Nullable ArrayList<String> competitionRoutes,
+                             @Nullable ArrayList<String> competitors) {
         this.competitionName = competitionName;
         this.competitionType = competitionType;
-        this.competitionTime = competitionTime;
         this.isActive = isActive;
-        this.competitionsRoutes = competitionsRoutes;
+        this.competitionRoutes = competitionRoutes;
         this.competitors = competitors;
 
     }
-
-
 }

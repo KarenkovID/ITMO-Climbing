@@ -1,4 +1,4 @@
-package ru.climbing.itmo.itmoclimbing.cache.competitionsCache;
+package ru.climbing.itmo.itmoclimbing.cache.routesCache;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -9,42 +9,38 @@ import android.support.annotation.AnyThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
-import android.util.TimeUtils;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
-
+import ru.climbing.itmo.itmoclimbing.cache.competitionsCache.CompetitionsDBHelper;
 import ru.climbing.itmo.itmoclimbing.model.CompetitionsEntry;
 import ru.climbing.itmo.itmoclimbing.model.CompetitionsRoutesEntry;
 
-
-import static ru.climbing.itmo.itmoclimbing.cache.competitionsCache.CompetitionsCacheContract.CompetitionsCached.COMPETITIONS_TABLE;
-import static ru.climbing.itmo.itmoclimbing.cache.competitionsCache.CompetitionsCacheContract.competitionsCacheColumns.COMPETITION_COMPONENTS;
-import static ru.climbing.itmo.itmoclimbing.cache.competitionsCache.CompetitionsCacheContract.competitionsCacheColumns.COMPETITION_NAME;
-import static ru.climbing.itmo.itmoclimbing.cache.competitionsCache.CompetitionsCacheContract.competitionsCacheColumns.COMPETITION_TYPE;
-import static ru.climbing.itmo.itmoclimbing.cache.competitionsCache.CompetitionsCacheContract.competitionsCacheColumns.IS_ACTIVE;
+import static ru.climbing.itmo.itmoclimbing.cache.routesCache.RoutesCacheContract.RoutesCached.ROUTES_TABLE;
+import static ru.climbing.itmo.itmoclimbing.cache.routesCache.RoutesCacheContract.routsCacheColumns.ROUTE_COMPONENTS;
+import static ru.climbing.itmo.itmoclimbing.cache.routesCache.RoutesCacheContract.routsCacheColumns.ROUTE_ID;
+import static ru.climbing.itmo.itmoclimbing.cache.routesCache.RoutesCacheContract.routsCacheColumns.ROUTE_LEVEL;
+import static ru.climbing.itmo.itmoclimbing.cache.routesCache.RoutesCacheContract.routsCacheColumns.ROUTE_NAME;
 
 /**
- * Created by macbook on 16.12.16.
+ * Created by macbook on 18.12.16.
  */
 
-public class CompetitionsCache {
+public class RoutesCache {
     @NonNull
     private final Context context;
 
 
-    private void getEntry(SQLiteStatement insert, CompetitionsEntry entry) {
-        insert.bindString(1, entry.competitionName);
-        insert.bindString(2, entry.competitionType);
-        insert.bindString(3, entry.isActive);
+    private void getEntry(SQLiteStatement insert, CompetitionsRoutesEntry entry) {
+        insert.bindString(1, entry.routeName);
+        insert.bindDouble(2, entry.routeFactor);
+        insert.bindLong(3, entry.id);
     }
 
     @AnyThread
-    public CompetitionsCache(@NonNull Context context) {
+    public RoutesCache(@NonNull Context context) {
         this.context = context.getApplicationContext();
     }
 
@@ -53,12 +49,10 @@ public class CompetitionsCache {
     public List<CompetitionsEntry> get()
             throws FileNotFoundException {
         SQLiteDatabase db = CompetitionsDBHelper.getInstance(context).getReadableDatabase();
-        String[] projection = COMPETITION_COMPONENTS;
+        String[] projection = ROUTE_COMPONENTS;
         List<CompetitionsEntry> comptable = new ArrayList<>();
-
-
         try (Cursor cursor = db.query(
-                COMPETITIONS_TABLE,
+                ROUTES_TABLE,
                 projection,
                 null,
                 null,
@@ -86,17 +80,17 @@ public class CompetitionsCache {
     }
 
     @WorkerThread
-    public void put(@NonNull List<CompetitionsEntry> compTable) {
+    public void put(@NonNull List<CompetitionsRoutesEntry> compTable) {
         SQLiteDatabase db = CompetitionsDBHelper.getInstance(context).getWritableDatabase();
         db.beginTransaction();
-        String insertion = "INSERT INTO " + CompetitionsCacheContract.CompetitionsCached.COMPETITIONS_TABLE + " ("
-                + COMPETITION_NAME + ", "
-                + COMPETITION_TYPE + ", "
-                + IS_ACTIVE + ", ";
+        String insertion = "INSERT INTO " + RoutesCacheContract.RoutesCached.ROUTES_TABLE + " ("
+                + ROUTE_NAME + ", "
+                + ROUTE_LEVEL + ", "
+                + ROUTE_ID + ", ";
         insertion += ") VALUES(?, ?, ?)";
 
         try (SQLiteStatement insert = db.compileStatement(insertion)) {
-            for (CompetitionsEntry entry : compTable) {
+            for (CompetitionsRoutesEntry entry : compTable) {
                 getEntry(insert, entry);
                 insert.executeInsert();
             }
@@ -106,5 +100,5 @@ public class CompetitionsCache {
         }
     }
 
-    private static final String TAG = "CompTableCache";
+    private static final String TAG = "ComptableCache";
 }
