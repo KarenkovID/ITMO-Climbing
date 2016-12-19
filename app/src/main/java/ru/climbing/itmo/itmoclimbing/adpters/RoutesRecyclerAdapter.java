@@ -36,7 +36,7 @@ public class RoutesRecyclerAdapter extends RecyclerView.Adapter<RoutesRecyclerAd
     @Override
     public void onBindViewHolder(RouteHolder holder, int position) {
         Route route = routesData.get(position);
-        holder.tvGrade.setText(route.grade);
+        holder.tvGrade.setText(route.grade.grade);
         holder.tvRouteName.setText(route.name);
     }
 

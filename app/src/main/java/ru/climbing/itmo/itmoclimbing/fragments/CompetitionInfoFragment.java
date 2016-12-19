@@ -7,8 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+
 import ru.climbing.itmo.itmoclimbing.R;
 import ru.climbing.itmo.itmoclimbing.model.CompetitionsEntry;
+import ru.climbing.itmo.itmoclimbing.model.CompetitionsRoutesEntry;
+import ru.climbing.itmo.itmoclimbing.model.CompetitorEntry;
 
 /**
  * Created by Игорь on 18.12.2016.
@@ -20,9 +24,15 @@ public class CompetitionInfoFragment extends Fragment {
     public static final String COMPETITION_DATA_TAG = "competitionData";
 
     private CompetitionsEntry mCompetitionData;
+    private ArrayList<CompetitionsRoutesEntry> mCompetitionRoutesData;
+    private ArrayList<CompetitorEntry> mCompetitorsRoutesData;
 
-    @Deprecated
-    public CompetitionInfoFragment(){}
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle arguments = getArguments();
+        mCompetitionData = arguments.getParcelable(COMPETITION_DATA_TAG);
+    }
 
     @Nullable
     @Override
@@ -42,8 +52,7 @@ public class CompetitionInfoFragment extends Fragment {
     public static CompetitionInfoFragment newInstance(CompetitionsEntry competitionData) {
         CompetitionInfoFragment resFragment = new CompetitionInfoFragment();
         Bundle bundle = new Bundle();
-        // FIXME: 19.12.2016
-//        bundle.putParcelable(COMPETITION_DATA_TAG, competitionData);
+        bundle.putParcelable(COMPETITION_DATA_TAG, competitionData);
         resFragment.setArguments(bundle);
         return resFragment;
     }

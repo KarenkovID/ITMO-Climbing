@@ -22,7 +22,7 @@ public class ItmoClimbingApi {
     public static HttpURLConnection getRoutesRequest() throws IOException {
         // TODO
         Uri uri = BASE_URI.buildUpon()
-                .appendEncodedPath("routes/?format=json").build();
+                .appendEncodedPath("api/routes/?format=json").build();
         return (HttpURLConnection) new URL(uri.toString()).openConnection();
     }
 }

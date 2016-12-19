@@ -10,8 +10,46 @@ import android.support.annotation.Nullable;
  * Информация о трассе, полученная из API
  */
 
-public class Route implements Parcelable{
+public class Route implements Parcelable {
 
+
+    public static class Grade implements Parcelable {
+        public final String grade;
+        public final int cost;
+
+        public Grade(String grade, int cost) {
+            this.grade = grade;
+            this.cost = cost;
+        }
+
+        protected Grade(Parcel in) {
+            grade = in.readString();
+            cost = in.readInt();
+        }
+
+        public static final Creator<Grade> CREATOR = new Creator<Grade>() {
+            @Override
+            public Grade createFromParcel(Parcel in) {
+                return new Grade(in);
+            }
+
+            @Override
+            public Grade[] newArray(int size) {
+                return new Grade[size];
+            }
+        };
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(grade);
+            dest.writeInt(cost);
+        }
+    }
 
     /**
      * Название трассы
@@ -22,7 +60,7 @@ public class Route implements Parcelable{
      * Категория трассы
      */
     @NonNull
-    public final String grade;
+    public final Grade grade;
     /**
      * Описание трассы
      */
@@ -34,23 +72,32 @@ public class Route implements Parcelable{
     @NonNull
     public final String author;
 
+    /**
+     * Накручена ли сейчас данная трасса
+     */
+    @NonNull
+    public final boolean isActive;
+
     public Route(
             @NonNull String name,
             @NonNull String grade,
+            int cost,
             @NonNull String author,
-            @NonNull String description) {
+            @NonNull String description,
+            boolean isActive) {
         this.name = name;
-        this.grade = grade;
+        this.grade = new Grade(grade, cost);
         this.author = author;
         this.description = description;
+        this.isActive = isActive;
     }
-
 
     protected Route(Parcel in) {
         name = in.readString();
-        grade = in.readString();
+        grade = in.readParcelable(Grade.class.getClassLoader());
         description = in.readString();
         author = in.readString();
+        isActive = in.readByte() != 0;
     }
 
     public static final Creator<Route> CREATOR = new Creator<Route>() {
@@ -73,9 +120,9 @@ public class Route implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
-        dest.writeString(grade);
+        dest.writeParcelable(grade, flags);
         dest.writeString(description);
         dest.writeString(author);
+        dest.writeByte((byte) (isActive ? 1 : 0));
     }
-
 }

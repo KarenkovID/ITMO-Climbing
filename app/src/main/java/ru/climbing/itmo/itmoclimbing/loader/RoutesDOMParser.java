@@ -7,6 +7,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import ru.climbing.itmo.itmoclimbing.model.Route;
 import ru.climbing.itmo.itmoclimbing.utils.IOUtils;
@@ -29,11 +31,16 @@ public final class RoutesDOMParser {
             JSONException {
         final ArrayList<Route> resultArray = new ArrayList<Route>(json.length());
         for (int i = 0; i < json.length(); ++i) {
-            JSONObject movieJson = json.getJSONObject(i);
-            final String name = movieJson.getString("competitionName");
-            final String author = movieJson.getString("author");
-            final String description = movieJson.getString("description");
-            resultArray.add(new Route(name, "8a", author, description));
+            JSONObject jsonRoute = json.getJSONObject(i);
+            final int id = jsonRoute.getInt("id");
+            JSONObject jsonObjGrade = jsonRoute.getJSONObject("grade");
+            final String grade = jsonObjGrade.getString("grade");
+            final int  cost = jsonObjGrade.getInt("cost");
+            final String name = jsonRoute.getString("name");
+            final String description = jsonRoute.getString("description");
+            final String author = jsonRoute.getString("author");
+            final boolean isActive = jsonRoute.getBoolean("is_active");
+            resultArray.add(new Route(name, grade, cost, author, description, isActive));
         }
 
         return resultArray;

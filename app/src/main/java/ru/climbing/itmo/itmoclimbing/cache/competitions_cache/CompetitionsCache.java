@@ -46,13 +46,13 @@ public class CompetitionsCache {
 //    private static ArrayList<ArrayList<CompetitionsRoutesEntry>> mCompetitionsRouuteList;
 //    private static ArrayList<ArrayList<CompetitorEntry>> mCompetitorsList;
 
-    private void fillCompetitionStatment(SQLiteStatement insert,
+    private void fillCompetitionStatement(SQLiteStatement insert,
                           CompetitionsEntry competition) throws JSONException {
         insert.bindString(1, competition.competitionName);
         insert.bindString(2, competition.competitionType);
         insert.bindLong(3, competition.isActive ? 1 : 0);
     }
-    private void fillRouteStatment(SQLiteStatement insert,
+    private void fillRouteStatement(SQLiteStatement insert,
                           CompetitionsRoutesEntry route) throws JSONException {
         insert.bindString(1, route.routeName);
         insert.bindDouble(2, route.routeFactor);
@@ -115,7 +115,7 @@ public class CompetitionsCache {
 
         try (SQLiteStatement insert = db.compileStatement(insertion)) {
             for (int i = 0; i < competitionsList.size(); i++) {
-                fillCompetitionStatment(insert, competitionsList.get(i));
+                fillCompetitionStatement(insert, competitionsList.get(i));
                 insert.executeInsert();
             }
             db.setTransactionSuccessful();
@@ -141,7 +141,7 @@ public class CompetitionsCache {
         insertion += ") VALUES(?, ?, ?)";
 
         try (SQLiteStatement insert = db.compileStatement(insertion)) {
-            fillRouteStatment(insert, competitionsRoutesEntry);
+            fillRouteStatement(insert, competitionsRoutesEntry);
             insert.executeInsert();
 
             db.setTransactionSuccessful();
