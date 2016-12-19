@@ -1,4 +1,4 @@
-package ru.climbing.itmo.itmoclimbing.cache.competitionsCache;
+package ru.climbing.itmo.itmoclimbing.cache.competitions_cache;
 
 import android.provider.BaseColumns;
 
@@ -8,7 +8,7 @@ import android.provider.BaseColumns;
 
 final class CompetitionsCacheContract {
 
-    interface competitionsCacheColumns extends BaseColumns {
+    interface CompetitionsCacheColumns extends BaseColumns {
 
         String COMPETITION_NAME = "competition_name";
         String COMPETITION_TYPE = "competition_type";
@@ -21,7 +21,7 @@ final class CompetitionsCacheContract {
 
     }
 
-    static final class CompetitionsCached implements competitionsCacheColumns {
+    static final class CompetitionsCached implements CompetitionsCacheColumns {
         static final String COMPETITIONS_TABLE = "competitions_table";
         static final String CREATE_COMPETITIONS_TABLE = "CREATE TABLE " + COMPETITIONS_TABLE
                 + " ("

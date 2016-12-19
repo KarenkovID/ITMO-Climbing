@@ -1,50 +1,59 @@
 package ru.climbing.itmo.itmoclimbing.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
- * Created by macbook on 16.12.16.
+ * Данный клас предназначен для хранения
  */
 
-public class CompetitorEntry {
+public class CompetitorEntry implements Parcelable{
 
-    public static class CompetitorsRouteData{
+    protected CompetitorEntry(Parcel in) {
+        competitorName = in.readString();
+    }
 
-        private CompetitionsRoutesEntry routesEntry;
-        private int startPosition;
-        private int result;
-
-        public CompetitorsRouteData(CompetitionsRoutesEntry routesEntry,
-                                    int startPosition, int result) {
-            this.routesEntry = routesEntry;
-            this.startPosition = startPosition;
-            this.result = result;
+    public static final Creator<CompetitorEntry> CREATOR = new Creator<CompetitorEntry>() {
+        @Override
+        public CompetitorEntry createFromParcel(Parcel in) {
+            return new CompetitorEntry(in);
         }
 
-        public CompetitionsRoutesEntry getRoutesEntry() {
-            return routesEntry;
+        @Override
+        public CompetitorEntry[] newArray(int size) {
+            return new CompetitorEntry[size];
         }
+    };
 
-        public void setRoutesEntry(CompetitionsRoutesEntry routesEntry) {
-            this.routesEntry = routesEntry;
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(competitorName);
+    }
+
+    public static class RouteResultData{
+        public int lastHold;
+        public boolean isTop;
+
+        public RouteResultData() {}
+
+
+
+        public RouteResultData(int lastHold, boolean isTop) {
+            setResult(lastHold, isTop);
         }
-
-        public int getStartPosition() {
-            return startPosition;
-        }
-
-        public void setStartPosition(int startPosition) {
-            this.startPosition = startPosition;
-        }
-
-        public int getResult() {
-            return result;
-        }
-
-        public void setResult(int result) {
-            this.result = result;
+        public void setResult (int lastHold, boolean isTop) {
+            this.lastHold = lastHold;
+            this.isTop = isTop;
         }
     }
 
@@ -52,11 +61,14 @@ public class CompetitorEntry {
     public final String competitorName;
 
     @NonNull
-    public ArrayList<CompetitorsRouteData> competitorsRouteData;
+    public ArrayList<RouteResultData> competitorsRouteResultData;
 
     public CompetitorEntry(@NonNull String competitorName,
-                           @NonNull ArrayList<CompetitorsRouteData> competitorsRouteData) {
+                           int routesCount) {
         this.competitorName = competitorName;
-        this.competitorsRouteData = competitorsRouteData;
+        competitorsRouteResultData = new ArrayList<>(routesCount);
+        for (int i = 0; i < competitorsRouteResultData.size(); ++i) {
+            competitorsRouteResultData.add(new RouteResultData());
+        }
     }
 }

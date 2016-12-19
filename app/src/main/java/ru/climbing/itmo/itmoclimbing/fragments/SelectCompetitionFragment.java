@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,15 +19,19 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import ru.climbing.itmo.itmoclimbing.CompetitionManagerActivity;
 import ru.climbing.itmo.itmoclimbing.R;
+import ru.climbing.itmo.itmoclimbing.callbacks.OnSelectListItem;
 import ru.climbing.itmo.itmoclimbing.model.CompetitionsEntry;
+import ru.climbing.itmo.itmoclimbing.model.CompetitionsRoutesEntry;
+import ru.climbing.itmo.itmoclimbing.model.CompetitorEntry;
 
 /**
  * Created by Игорь on 16.12.2016.
  */
 
 public class SelectCompetitionFragment extends Fragment implements
-        View.OnClickListener{
+        View.OnClickListener, OnSelectListItem{
     private static final int REQUEST_COMPETITION_NAME_TAG = 1;
     private static final int REQUEST_ANOTHER_ONE = 2;
 
@@ -65,7 +70,7 @@ public class SelectCompetitionFragment extends Fragment implements
         rvCompetitions = (RecyclerView) view.findViewById(R.id.rvCompetitions);
 
         mRecyclerAdapter = new CompetitionsRecyclerAdapter(
-                mCompetitionsList, LayoutInflater.from(getContext()));
+                mCompetitionsList, LayoutInflater.from(getContext()), this);
         mLayoutManager = new LinearLayoutManager(getContext());
 
         rvCompetitions.setAdapter(mRecyclerAdapter);
@@ -123,7 +128,8 @@ public class SelectCompetitionFragment extends Fragment implements
             return;
         }
         Log.d(TAG, "addCompetition: " + competitionName);
-        mCompetitionsList.add(new CompetitionsEntry(competitionName, "", true, null, null));
+        mCompetitionsList.add(new CompetitionsEntry(
+                competitionName, "", true));
         mRecyclerAdapter.notifyDataSetChanged();
         Log.d(TAG, "addCompetition: competitions count " + mRecyclerAdapter.getItemCount());
     }
@@ -135,21 +141,38 @@ public class SelectCompetitionFragment extends Fragment implements
         outState.putParcelableArrayList(COMPETITIONS_ARRAY_LIST_TAG, mCompetitionsList);
     }
 
-    public static class CompetitionsRecyclerAdapter extends RecyclerView.Adapter<CompetitionsRecyclerAdapter.CompetitionVH> {
+    @Override
+    public void onClick(int position) {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        if (fragmentManager.findFragmentByTag(CompetitionInfoFragment.TAG) == null) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, CompetitionInfoFragment.newInstance(
+                            mCompetitionsList.get(position)), CompetitionInfoFragment.TAG)
+                    .addToBackStack(CompetitionManagerActivity.BACK_STACK_TAG)
+                    .commit();
+        }
+    }
+
+    public static class CompetitionsRecyclerAdapter
+            extends RecyclerView.Adapter<CompetitionsRecyclerAdapter.CompetitionVH> {
         @NonNull
         private ArrayList<CompetitionsEntry> mCompetitionData;
         @NonNull
         private LayoutInflater mLayoutInflater;
+        @NonNull OnSelectListItem listener;
 
         public CompetitionsRecyclerAdapter (@NonNull ArrayList<CompetitionsEntry> data,
-                                            @NonNull LayoutInflater layoutInflater) {
+                                            @NonNull LayoutInflater layoutInflater,
+                                            @NonNull OnSelectListItem listener) {
+            this.listener = listener;
             mCompetitionData = data;
             mLayoutInflater = layoutInflater;
         }
 
         @Override
         public CompetitionVH onCreateViewHolder(ViewGroup parent, int viewType) {
-            return  new CompetitionVH(mLayoutInflater.inflate(R.layout.competition_card, parent, false));
+            return new CompetitionVH(mLayoutInflater.inflate(R.layout.competition_card, parent, false),
+                    listener);
         }
 
         @Override
@@ -163,13 +186,24 @@ public class SelectCompetitionFragment extends Fragment implements
         }
 
 
-        public static class CompetitionVH extends RecyclerView.ViewHolder {
-            private TextView tvCompetitionName;
 
-            public CompetitionVH(View itemView) {
+        public static class CompetitionVH extends RecyclerView.ViewHolder
+                implements View.OnClickListener {
+            private TextView tvCompetitionName;
+            private OnSelectListItem listener;
+
+            public CompetitionVH(View itemView, OnSelectListItem listener) {
                 super(itemView);
                 tvCompetitionName = (TextView) itemView.findViewById(R.id.tvCompetitionName);
+                itemView.setOnClickListener(this);
+                this.listener = listener;
             }
-        } 
+
+            @Override
+            public void onClick(View v) {
+                int position = getAdapterPosition();
+                listener.onClick(position);
+            }
+        }
     }
 }

@@ -8,9 +8,14 @@ import android.util.Log;
 
 import ru.climbing.itmo.itmoclimbing.fragments.SelectCompetitionFragment;
 
+/**
+ * Менеджер соревнований, при помощи которого можно вести учёт во внутресекционных прикидках
+ */
 public class CompetitionManagerActivity extends AppCompatActivity {
 
     public static final String TAG = CompetitionManagerActivity.class.getSimpleName();
+
+    public static final String BACK_STACK_TAG = TAG + "backStack";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +30,7 @@ public class CompetitionManagerActivity extends AppCompatActivity {
         if (fragmentManager.findFragmentByTag(SelectCompetitionFragment.TAG) == null) {
             fragmentManager.beginTransaction()
                     .replace(R.id.container, new SelectCompetitionFragment(), SelectCompetitionFragment.TAG)
-                    .addToBackStack(null)
+                    .addToBackStack(BACK_STACK_TAG)
                     .commit();
         }
     }

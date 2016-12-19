@@ -1,7 +1,6 @@
-package ru.climbing.itmo.itmoclimbing.cache.routeCache;
+package ru.climbing.itmo.itmoclimbing.cache.route_cache;
 
 import android.provider.BaseColumns;
-import android.support.annotation.NonNull;
 
 
 /**

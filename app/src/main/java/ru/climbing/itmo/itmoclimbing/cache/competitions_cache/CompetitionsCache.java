@@ -1,4 +1,4 @@
-package ru.climbing.itmo.itmoclimbing.cache.competitionsCache;
+package ru.climbing.itmo.itmoclimbing.cache.competitions_cache;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -22,13 +22,13 @@ import ru.climbing.itmo.itmoclimbing.model.CompetitionsEntry;
 import ru.climbing.itmo.itmoclimbing.model.CompetitionsRoutesEntry;
 import ru.climbing.itmo.itmoclimbing.model.CompetitorEntry;
 ;
-import static ru.climbing.itmo.itmoclimbing.cache.competitionsCache.CompetitionsCacheContract.CompetitionsCached.COMPETITIONS_TABLE;
-import static ru.climbing.itmo.itmoclimbing.cache.competitionsCache.CompetitionsCacheContract.competitionsCacheColumns.COMPETITION_COMPONENTS;
-import static ru.climbing.itmo.itmoclimbing.cache.competitionsCache.CompetitionsCacheContract.competitionsCacheColumns.COMPETITION_NAME;
-import static ru.climbing.itmo.itmoclimbing.cache.competitionsCache.CompetitionsCacheContract.competitionsCacheColumns.COMPETITION_ROUTES;
-import static ru.climbing.itmo.itmoclimbing.cache.competitionsCache.CompetitionsCacheContract.competitionsCacheColumns.COMPETITION_TYPE;
-import static ru.climbing.itmo.itmoclimbing.cache.competitionsCache.CompetitionsCacheContract.competitionsCacheColumns.COMPETITORS;
-import static ru.climbing.itmo.itmoclimbing.cache.competitionsCache.CompetitionsCacheContract.competitionsCacheColumns.IS_ACTIVE;
+import static ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsCacheContract.CompetitionsCached.COMPETITIONS_TABLE;
+import static ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsCacheContract.CompetitionsCacheColumns.COMPETITION_COMPONENTS;
+import static ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsCacheContract.CompetitionsCacheColumns.COMPETITION_NAME;
+import static ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsCacheContract.CompetitionsCacheColumns.COMPETITION_ROUTES;
+import static ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsCacheContract.CompetitionsCacheColumns.COMPETITION_TYPE;
+import static ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsCacheContract.CompetitionsCacheColumns.COMPETITORS;
+import static ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsCacheContract.CompetitionsCacheColumns.IS_ACTIVE;
 
 /**
  * Created by macbook on 16.12.16.
@@ -38,13 +38,17 @@ public class CompetitionsCache {
     @NonNull
     private final Context context;
 
+    private static ArrayList<CompetitionsEntry> mCompetitionsList;
+    private static ArrayList<ArrayList<CompetitionsRoutesEntry>> mCompetitionsRouuteList;
+    private static ArrayList<ArrayList<CompetitorEntry>> mCompetitorsList;
 
-    private void getEntry(SQLiteStatement insert, CompetitionsEntry entry) throws JSONException {
-        insert.bindString(1, entry.competitionName);
-        insert.bindString(2, entry.competitionType);
-        insert.bindLong(3, entry.isActive ? 1 : 0);
-        insert.bindString(4, CompParse.parseCompRoutesToString(entry.competitionRoutes));
-        insert.bindString(5, CompParse.parseCompetitorsToString(entry.competitors));
+    private void getEntry(SQLiteStatement insert, int competitionPos) throws JSONException {
+        insert.bindString(1, mCompetitionsList.get(competitionPos).competitionName);
+        insert.bindString(2, mCompetitionsList.get(competitionPos).competitionType);
+        insert.bindLong(3, mCompetitionsList.get(competitionPos).isActive ? 1 : 0);
+        insert.bindString(4, CompParse.parseCompRoutesToString(
+                mCompetitionsRouuteList.get(competitionPos)));
+        insert.bindString(5, CompParse.parseCompetitorsToString(mCompetitorsList.get(competitionPos)));
     }
 
     @AnyThread
@@ -56,6 +60,7 @@ public class CompetitionsCache {
     @NonNull
     public List<CompetitionsEntry> get()
             throws FileNotFoundException {
+        // FIXME: 19.12.2016 
         SQLiteDatabase db = CompetitionsDBHelper.getInstance(context).getReadableDatabase();
         String[] projection = COMPETITION_COMPONENTS;
         List<CompetitionsEntry> compTable = new ArrayList<>();
@@ -77,8 +82,7 @@ public class CompetitionsCache {
                     boolean b = (isActive == 1);
                     ArrayList<CompetitionsRoutesEntry> competitionsRoutes = CompParse.parseCompRoutesToArray(cursor.getString(3));
                     ArrayList<CompetitorEntry> competitors = CompParse.parseCompetitorsToArray(cursor.getString(4));
-                    compTable.add(new CompetitionsEntry(competitionName, competitionType,
-                            b, competitionsRoutes, competitors));
+                    compTable.add(new CompetitionsEntry(competitionName, competitionType, b));
                 }
             } else {
                 throw new FileNotFoundException("!!!");
@@ -105,8 +109,8 @@ public class CompetitionsCache {
         insertion += ") VALUES(?, ?, ?, ?, ?)";
 
         try (SQLiteStatement insert = db.compileStatement(insertion)) {
-            for (CompetitionsEntry entry : compTable) {
-                getEntry(insert, entry);
+            for (int i = 0; i < mCompetitionsList.size(); i++) {
+                getEntry(insert, i);
                 insert.executeInsert();
             }
             db.setTransactionSuccessful();

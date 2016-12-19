@@ -1,4 +1,4 @@
-package ru.climbing.itmo.itmoclimbing.cache.routeCache;
+package ru.climbing.itmo.itmoclimbing.cache.route_cache;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import ru.climbing.itmo.itmoclimbing.cache.utils.DBCorruptionHandler;
 
-import static ru.climbing.itmo.itmoclimbing.cache.routeCache.RouteCacheContract.RoutesCached.CREATE_ROUTES_TABLE;
+import static ru.climbing.itmo.itmoclimbing.cache.route_cache.RouteCacheContract.RoutesCached.CREATE_ROUTES_TABLE;
 
 /**
  * Created by macbook on 16.12.16.

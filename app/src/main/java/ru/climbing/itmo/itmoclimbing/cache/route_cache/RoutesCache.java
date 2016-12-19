@@ -1,4 +1,4 @@
-package ru.climbing.itmo.itmoclimbing.cache.routeCache;
+package ru.climbing.itmo.itmoclimbing.cache.route_cache;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -16,45 +16,18 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.climbing.itmo.itmoclimbing.cache.competitionsCache.CompetitionsDBHelper;
-import ru.climbing.itmo.itmoclimbing.cache.utils.CompParse;
-import ru.climbing.itmo.itmoclimbing.loader.BadResponseException;
-import ru.climbing.itmo.itmoclimbing.model.CompetitionsEntry;
-import ru.climbing.itmo.itmoclimbing.model.CompetitionsRoutesEntry;
-import ru.climbing.itmo.itmoclimbing.model.CompetitorEntry;
-import static ru.climbing.itmo.itmoclimbing.cache.routeCache.RouteCacheContract.RoutesCached.ROUTES_TABLE;
-import static ru.climbing.itmo.itmoclimbing.cache.routeCache.RouteCacheContract.routeCacheColumns.ROUTE_AUTHOR;
-import static ru.climbing.itmo.itmoclimbing.cache.routeCache.RouteCacheContract.routeCacheColumns.ROUTE_COMPONENTS;
-import static ru.climbing.itmo.itmoclimbing.cache.routeCache.RouteCacheContract.routeCacheColumns.ROUTE_DESCRIPTION;
-import static ru.climbing.itmo.itmoclimbing.cache.routeCache.RouteCacheContract.routeCacheColumns.ROUTE_GRADE;
-import static ru.climbing.itmo.itmoclimbing.cache.routeCache.RouteCacheContract.routeCacheColumns.ROUTE_NAME;
+import ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsDBHelper;
+import static ru.climbing.itmo.itmoclimbing.cache.route_cache.RouteCacheContract.RoutesCached.ROUTES_TABLE;
+import static ru.climbing.itmo.itmoclimbing.cache.route_cache.RouteCacheContract.routeCacheColumns.ROUTE_AUTHOR;
+import static ru.climbing.itmo.itmoclimbing.cache.route_cache.RouteCacheContract.routeCacheColumns.ROUTE_COMPONENTS;
+import static ru.climbing.itmo.itmoclimbing.cache.route_cache.RouteCacheContract.routeCacheColumns.ROUTE_DESCRIPTION;
+import static ru.climbing.itmo.itmoclimbing.cache.route_cache.RouteCacheContract.routeCacheColumns.ROUTE_GRADE;
+import static ru.climbing.itmo.itmoclimbing.cache.route_cache.RouteCacheContract.routeCacheColumns.ROUTE_NAME;
 
 /**
  * Created by macbook on 18.12.16.
  */
 
-
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.AnyThread;
-import android.support.annotation.NonNull;
-import android.support.annotation.WorkerThread;
-import android.util.Log;
-
-import org.json.JSONException;
-
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-
-import ru.climbing.itmo.itmoclimbing.cache.utils.CompParse;
-import ru.climbing.itmo.itmoclimbing.loader.BadResponseException;
-import ru.climbing.itmo.itmoclimbing.model.CompetitionsEntry;
-import ru.climbing.itmo.itmoclimbing.model.CompetitionsRoutesEntry;
-import ru.climbing.itmo.itmoclimbing.model.CompetitorEntry;
 import ru.climbing.itmo.itmoclimbing.model.Route;
 
 public class RoutesCache {
@@ -132,6 +105,7 @@ public class RoutesCache {
             db.endTransaction();
         }
     }
+
 
     private static final String TAG = "RouteTableCache";
 }
