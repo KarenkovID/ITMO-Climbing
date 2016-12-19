@@ -105,6 +105,12 @@
     <string name="competitions_manager">Competitions manager</string>
     <string name="new_competition">New competition</string>
     <string name="hint_competition_name">Competition name</string>
+    <string name="hint_first_name">First name</string>
+    <string name="hint_second_name">Second name</string>
+    <string name="hint_login">Login</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_confirm_password">Confirm password</string>
+    <string name="button_registration">REGISTRATION</string>
     <string name="create">Create</string>
     <string name="cancel">Cancel</string>
 </resources>

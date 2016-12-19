@@ -9,7 +9,7 @@
         android:scaleType="centerCrop"
         android:src="@mipmap/mountains2" />
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
@@ -18,46 +18,49 @@
         android:padding="20dp"
         android:layout_margin="10dp">
 
-        <TextView
-            android:id="@+id/textView3"
+
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Login"
-            android:textColor="@color/colorAccent"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            android:focusableInTouchMode="true"
+            >
 
-        <EditText
-            android:id="@+id/loginETxt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="7"
-            android:hint="limon"
-            android:inputType="textPersonName"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+            <EditText
+                android:id="@+id/loginETxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/hint_login"
+                android:inputType="textPersonName"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
-        <TextView
+        </android.support.design.widget.TextInputLayout>
+
+
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Password"
-            android:textColor="@color/colorAccent"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            android:focusableInTouchMode="true"
+            >
 
-        <EditText
-            android:id="@+id/passwordETxt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="7"
-            android:hint="password"
-            android:inputType="textPassword"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+            <EditText
+                android:id="@+id/passwordETxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/hint_password"
+                android:inputType="textPassword"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+        </android.support.design.widget.TextInputLayout>
 
         <Button
             android:id="@+id/signInBtn"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/editText2"
             android:layout_below="@+id/editText2"
             android:textColor="@color/colorAccent"
-            android:text="LOGIN" />
+            android:text="@string/hint_login" />
     </LinearLayout>
 </FrameLayout>
