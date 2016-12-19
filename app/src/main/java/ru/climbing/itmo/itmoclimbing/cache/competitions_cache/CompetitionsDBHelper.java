@@ -20,7 +20,7 @@ public class CompetitionsDBHelper extends SQLiteOpenHelper {
 
 
     public CompetitionsDBHelper(Context context) {
-        super(context, DB_FILE_NAME, null, 0, // TODO fix version
+        super(context, DB_FILE_NAME, null, 1, // TODO fix version
                 new DBCorruptionHandler(context, DB_FILE_NAME));
     }
 

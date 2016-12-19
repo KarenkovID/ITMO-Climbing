@@ -13,6 +13,9 @@ final class CompetitionsCacheContract {
         String COMPETITION_NAME = "competition_name";
         String COMPETITION_TYPE = "competition_type";
         String IS_ACTIVE = "is_active";
+        String ROUTE_NAME = "route_name";
+        String FACTOR = "route_factor";
+        String HOLDS_COUNT = "holds_count";
         String COMPETITION_ROUTES = "competition_routes";
         String COMPETITORS = "competitors";
 
@@ -31,6 +34,22 @@ final class CompetitionsCacheContract {
                 + COMPETITION_ROUTES + " TEXT, "
                 + COMPETITORS + " TEXT"
                 + ")";
+        private static final String COMPETITIONS_ROUTES_TABLE = "competition_routes_table";
+
+        static String getTableName (int competitionId) {
+            return COMPETITIONS_ROUTES_TABLE + competitionId;
+        }
+
+        static String getCommandCreateCompetitionsRoutesTable(int competitionId) {
+            String tableName = getTableName(competitionId);
+            return "CREATE TABLE " + tableName
+                    + " ("
+                    + ROUTE_NAME + " TEXT, "
+                    + FACTOR + " REAL, "
+                    + HOLDS_COUNT + " NUMERIC, "
+                    + ")";
+        }
+
     }
 
     private CompetitionsCacheContract() {
