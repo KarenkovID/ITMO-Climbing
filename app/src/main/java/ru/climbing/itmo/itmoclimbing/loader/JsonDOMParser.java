@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import ru.climbing.itmo.itmoclimbing.model.Athlete;
 import ru.climbing.itmo.itmoclimbing.model.Route;
 import ru.climbing.itmo.itmoclimbing.utils.IOUtils;
 
@@ -17,7 +18,7 @@ import ru.climbing.itmo.itmoclimbing.utils.IOUtils;
  * Created by Игорь on 19.11.2016.
  */
 
-public final class RoutesDOMParser {
+public final class JsonDOMParser {
     public static ArrayList<Route> parseRoutes(InputStream in) throws
             IOException,
             JSONException,
@@ -45,4 +46,30 @@ public final class RoutesDOMParser {
 
         return resultArray;
     }
+
+    public static ArrayList<Athlete> parseAthletes(InputStream in) throws
+            IOException,
+            JSONException,
+            BadResponseException{
+        final String content = IOUtils.readToString(in, "UTF-8");
+        final JSONArray json = new JSONArray(content);
+        return parseAthletes(json);
+    }
+
+    private static ArrayList<Athlete> parseAthletes(JSONArray json) throws
+            JSONException {
+        final ArrayList<Athlete> resultArray = new ArrayList<Athlete>(json.length());
+        for (int i = 0; i < json.length(); ++i) {
+            JSONObject jsonAthlete = json.getJSONObject(i);
+            final int id = jsonAthlete.getInt("id");
+            final String firstName = jsonAthlete.getString("first_name");
+            final String lastName = jsonAthlete.getString("last_name");
+            final double score = jsonAthlete.getDouble("score");
+            final int position = jsonAthlete.getInt("position");
+            resultArray.add(new Athlete(id, lastName, firstName, score, position));
+        }
+        return resultArray;
+    }
+
+
 }

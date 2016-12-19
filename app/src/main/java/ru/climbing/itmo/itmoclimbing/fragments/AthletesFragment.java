@@ -19,25 +19,32 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ru.climbing.itmo.itmoclimbing.R;
+import ru.climbing.itmo.itmoclimbing.adpters.AthletesRecyclerAdapter;
 import ru.climbing.itmo.itmoclimbing.adpters.RoutesRecyclerAdapter;
+import ru.climbing.itmo.itmoclimbing.loader.AthleteListLoader;
 import ru.climbing.itmo.itmoclimbing.loader.LoadResult;
 import ru.climbing.itmo.itmoclimbing.loader.ResultType;
 import ru.climbing.itmo.itmoclimbing.loader.RoutesLoader;
+import ru.climbing.itmo.itmoclimbing.model.Athlete;
 import ru.climbing.itmo.itmoclimbing.model.Route;
 
-public class RoutesFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<LoadResult<ArrayList<Route>>>,
-        SwipeRefreshLayout.OnRefreshListener {
-    public static final String TAG = RoutesFragment.class.getSimpleName();
-    private static String ROUTES_LIST_TAG = "routesList";
+/**
+ * Created by Игорь on 20.12.2016.
+ */
 
-    private RecyclerView rvRoutes;
+public class AthletesFragment extends Fragment implements
+        LoaderManager.LoaderCallbacks<LoadResult<ArrayList<Athlete>>>,
+        SwipeRefreshLayout.OnRefreshListener{
+    public static final String TAG = Athlete.class.getSimpleName();
+    private static String ATHLETES_LIST_TAG = "routesList";
+
+    private RecyclerView rvAthletes;
     private ProgressBar progressBar;
-    private RoutesRecyclerAdapter recyclerAdapter;
+    private AthletesRecyclerAdapter recyclerAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TextView tvErrorMessage;
 
-    private ArrayList<Route> mRoutesList;
+    private ArrayList<Athlete> mAthletesList;
 
 
     @Override
@@ -45,14 +52,14 @@ public class RoutesFragment extends Fragment implements
         Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            mRoutesList = savedInstanceState.getParcelableArrayList(ROUTES_LIST_TAG);
+            mAthletesList = savedInstanceState.getParcelableArrayList(ATHLETES_LIST_TAG);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return  inflater.inflate(R.layout.fragment_routes, container, false);
+        return  inflater.inflate(R.layout.fragment_athletes, container, false);
     }
 
     @Override
@@ -60,21 +67,21 @@ public class RoutesFragment extends Fragment implements
         Log.d(TAG, "onViewCreated");
         super.onViewCreated(rootView, savedInstanceState);
 
-        rvRoutes = (RecyclerView) rootView.findViewById(R.id.rvRoutes);
+        rvAthletes = (RecyclerView) rootView.findViewById(R.id.rvAthletes);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         tvErrorMessage = (TextView) rootView.findViewById(R.id.tvError);
 
-        recyclerAdapter = new RoutesRecyclerAdapter(getContext());
-        rvRoutes.setAdapter(recyclerAdapter);
-        // TODO: 20.12.2016 нужны ли для этого отдельные поля в классе? 
-        rvRoutes.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerAdapter = new AthletesRecyclerAdapter(getContext());
+        rvAthletes.setAdapter(recyclerAdapter);
+        // TODO: 20.12.2016 нужны ли для этого отдельные поля в классе?
+        rvAthletes.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        if (mRoutesList == null) {
+        if (mAthletesList == null) {
             getActivity().getSupportLoaderManager().initLoader(0, null, this);
             progressBar.setVisibility(View.VISIBLE);
         } else {
-            recyclerAdapter.setRoutesData(mRoutesList);
-            rvRoutes.setVisibility(View.VISIBLE);
+            recyclerAdapter.setRoutesData(mAthletesList);
+            rvAthletes.setVisibility(View.VISIBLE);
         }
 
 
@@ -86,17 +93,17 @@ public class RoutesFragment extends Fragment implements
     }
 
     @Override
-    public Loader<LoadResult<ArrayList<Route>>> onCreateLoader(int id, Bundle args) {
-        return new RoutesLoader(getContext(), null);
+    public Loader<LoadResult<ArrayList<Athlete>>> onCreateLoader(int id, Bundle args) {
+        return new AthleteListLoader(getContext());
     }
 
     @Override
-    public void onLoadFinished(Loader<LoadResult<ArrayList<Route>>> loader, LoadResult<ArrayList<Route>> data) {
+    public void onLoadFinished(Loader<LoadResult<ArrayList<Athlete>>> loader, LoadResult<ArrayList<Athlete>> data) {
         progressBar.setVisibility(View.GONE);
         mSwipeRefreshLayout.setRefreshing(false);
         if (data.resultType == ResultType.OK) {
             Log.d(TAG, "onLoadFinished: loading is done");
-            mRoutesList = data.data;
+            mAthletesList = data.data;
             recyclerAdapter.setRoutesData(mRoutesList);
             tvErrorMessage.setVisibility(View.GONE);
             rvRoutes.setVisibility(View.VISIBLE);
@@ -118,7 +125,7 @@ public class RoutesFragment extends Fragment implements
     }
 
     @Override
-    public void onLoaderReset(Loader<LoadResult<ArrayList<Route>>> loader) {
+    public void onLoaderReset(Loader<LoadResult<ArrayList<Athlete>>> loader) {
 
     }
 

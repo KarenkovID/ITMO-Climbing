@@ -24,7 +24,8 @@ import ru.climbing.itmo.itmoclimbing.utils.IOUtils;
  */
 
 public class RoutesLoader extends AsyncTaskLoader<LoadResult<ArrayList<Route>>> {
-    public static final String LOG_TAG = "RoutesLoader";
+
+    public static final String TAG = "RoutesLoader";
 
     public RoutesLoader(Context context, Bundle args) {
         super(context);
@@ -37,52 +38,36 @@ public class RoutesLoader extends AsyncTaskLoader<LoadResult<ArrayList<Route>>> 
 
     @Override
     public LoadResult<ArrayList<Route>> loadInBackground() {
-        //TODO: what is it?
-        final StethoURLConnectionManager stethoManager = new StethoURLConnectionManager("API");
-
-        Log.d(LOG_TAG, "start loading in background");
-
-        ResultType resultType = ResultType.ERROR;
-        ArrayList<Route> resultList = null;
+        LoadResult<InputStream> loadResult;
         HttpURLConnection connection = null;
         InputStream in = null;
-
         try {
-            connection = ItmoClimbingApi.getRoutesRequest();
-
-            stethoManager.preConnect(connection, null);
-            connection.connect();
-            stethoManager.postConnect();
-
-            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                in = connection.getInputStream();
-                in = stethoManager.interpretResponseStream(in);
-
-                resultList = RoutesDOMParser.parseRoutes(in);
-
-                resultType = ResultType.OK;
-            } else {
-                throw new BadResponseException("HTTP: " + connection.getResponseCode() + ", "
-                        + connection.getResponseMessage());
+            try {
+                connection = ItmoClimbingApi.getRoutesRequest();
+                loadResult = LoadUtils.loadToStream(connection, getContext());
+            } catch (IOException e) {
+                Log.e(TAG, "loadInBackground: error while do getRouteRequest", e);
+                return new LoadResult<>(ResultType.ERROR, null);
             }
-        } catch (IOException e) {
-            stethoManager.httpExchangeFailed(e);
-            if (IOUtils.isConnectionAvailable(getContext(), false)) {
-                resultType = ResultType.ERROR;
-            } else {
-                resultType = ResultType.NO_INTERNET;
+            ArrayList<Route> routesList = null;
+            ResultType resultType = loadResult.resultType;
+            if (resultType == ResultType.OK) {
+                try {
+                    in = loadResult.data;
+                    routesList = JsonDOMParser.parseRoutes(in);
+                } catch (JSONException | BadResponseException | IOException e) {
+                    resultType = ResultType.ERROR;
+                    Log.e(TAG, "loadInBackground: EROR WHILE PARSE JSON", e);
+                }
             }
-        } catch (BadResponseException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
+            return new LoadResult<>(resultType, routesList);
         } finally {
-            IOUtils.closeSilently(in);
+            if (in != null) {
+                IOUtils.closeSilently(in);
+            }
             if (connection != null) {
                 connection.disconnect();
             }
         }
-
-        return new LoadResult<>(resultType, resultList);
     }
 }

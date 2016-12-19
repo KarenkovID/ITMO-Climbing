@@ -11,7 +11,7 @@ import java.net.URL;
  */
 
 public class ItmoClimbingApi {
-    private static final Uri BASE_URI = Uri.parse("http://itcl.pythonanywhere.com");
+    private static final Uri BASE_URI = Uri.parse("http://itcl.pythonanywhere.com/api");
 
     private ItmoClimbingApi() {
     }
@@ -20,9 +20,14 @@ public class ItmoClimbingApi {
      * Возвращает {@link HttpURLConnection} для выполнения запроса
      */
     public static HttpURLConnection getRoutesRequest() throws IOException {
-        // TODO
         Uri uri = BASE_URI.buildUpon()
-                .appendEncodedPath("api/routes/?format=json").build();
+                .appendEncodedPath("routes/?format=json").build();
+        return (HttpURLConnection) new URL(uri.toString()).openConnection();
+    }
+
+    public static HttpURLConnection getAthleteInfoListRequest() throws IOException{
+        Uri uri = BASE_URI.buildUpon()
+                .appendEncodedPath("athletes/?format=json").build();
         return (HttpURLConnection) new URL(uri.toString()).openConnection();
     }
 }
