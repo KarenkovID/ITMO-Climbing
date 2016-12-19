@@ -16,10 +16,13 @@ final class CompetitionsCacheContract {
         String ROUTE_NAME = "route_name";
         String FACTOR = "route_factor";
         String HOLDS_COUNT = "holds_count";
-        String COMPETITION_ROUTES = "competition_routes";
-        String COMPETITORS = "competitors";
+        String COMPETITOR_NAME = "competitor_name";
+        String COMPETITOR_LAST_HOLD = "competitor_last_hold";
+        String COMPETITOR_IS_TOP = "competitor_is_top";
 
-        String COMPETITION_COMPONENTS[] = {COMPETITION_NAME, COMPETITION_TYPE, IS_ACTIVE, COMPETITION_ROUTES, COMPETITORS};
+        String COMPETITION_COMPONENTS[] = {COMPETITION_NAME, COMPETITION_TYPE, IS_ACTIVE};
+        String ROUTES_COMPONENTS[] = {ROUTE_NAME, FACTOR, HOLDS_COUNT};
+        String COMPETITORS_COMPONENTS[] = {COMPETITOR_NAME, COMPETITOR_LAST_HOLD, COMPETITOR_IS_TOP};
 
 
     }
@@ -30,18 +33,21 @@ final class CompetitionsCacheContract {
                 + " ("
                 + COMPETITION_NAME + " TEXT, "
                 + COMPETITION_TYPE + " TEXT, "
-                + IS_ACTIVE + " TEXT, "
-                + COMPETITION_ROUTES + " TEXT, "
-                + COMPETITORS + " TEXT"
+                + IS_ACTIVE + " TEXT"
                 + ")";
         private static final String COMPETITIONS_ROUTES_TABLE = "competition_routes_table";
+        private static final String COMPETITORS_TABLE = "competitor_table";
 
-        static String getTableName (int competitionId) {
+        static String getRoutesTableName(int competitionId) {
+            return COMPETITIONS_ROUTES_TABLE + competitionId;
+        }
+
+        static String getCompetitorsTableName(int competitionId) {
             return COMPETITIONS_ROUTES_TABLE + competitionId;
         }
 
         static String getCommandCreateCompetitionsRoutesTable(int competitionId) {
-            String tableName = getTableName(competitionId);
+            String tableName = getRoutesTableName(competitionId);
             return "CREATE TABLE " + tableName
                     + " ("
                     + ROUTE_NAME + " TEXT, "
@@ -50,6 +56,17 @@ final class CompetitionsCacheContract {
                     + ")";
         }
 
+
+
+        static String getCommandCreateCompetitorsTable(int competitionId) {
+            String tableName = getCompetitorsTableName(competitionId);
+            return "CREATE TABLE " + tableName
+                    + " ("
+                    + COMPETITOR_NAME + " TEXT, "
+                    + COMPETITOR_LAST_HOLD + " INTEGER, "
+                    + COMPETITOR_IS_TOP + " BOOLEAN, "
+                    + ")";
+        }
     }
 
     private CompetitionsCacheContract() {

@@ -19,26 +19,13 @@ public class CompParse {
     private static final String IS_TOP_TAG = "isTop";
     private static final String ROUTE_COUNT_TAG = "count";
     private static final String COMPETITOR_NAME_TAG = "competitorName";
+    private static final String COMPETITOR_LAST_HOLD_TAG = "competitor_last_hold";
+    private static final String COMPETITOR_IS_TOP_TAG = "competitor_is_top";
     private static final String COMPETITORS_ROUTE_DATA_TAG = "competitorsRouteData";
     private static final String ROUTES_ENTRY_TAG = "routesEntry";
     private static final String START_POSITION_TAG = "startPosition";
     private static final String RESULT_TAG = "result";
 
-    public static String parseCompRoutesToString(ArrayList<CompetitionsRoutesEntry> arr) 
-            throws JSONException {
-        JSONArray jsonArrayRes = new JSONArray();
-        
-        for (int i = 0; i < arr.size(); i++) {
-            JSONObject jsonObjectRoute = new JSONObject();
-
-            jsonObjectRoute.put(ROUTE_NAME_TAG, arr.get(i).routeName);
-            jsonObjectRoute.put(ROUTE_FACTOR_TAG, arr.get(i).routeFactor);
-            jsonObjectRoute.put(ROUTE_COUNT_TAG, arr.get(i).holdsCount);
-            jsonArrayRes.put(jsonObjectRoute);
-        }
-
-        return jsonArrayRes.toString();
-    }
 
     public static String parseCompetitorsToString(ArrayList<CompetitorEntry> arr) throws JSONException {
         JSONArray jsonArrayRes = new JSONArray();
@@ -62,12 +49,36 @@ public class CompParse {
         return jsonArrayRes.toString();
     }
 
+    public static String parseRoutesDataToString(ArrayList<CompetitorEntry.RouteResultData> arr) throws JSONException {
+        JSONArray jsonArrayRes = new JSONArray();
+        for (int i = 0; i < arr.size(); i++) {
+            JSONObject jsonObjectCompetitor = new JSONObject();
+            jsonObjectCompetitor.put(COMPETITOR_LAST_HOLD_TAG, arr.get(i).lastHold);
+            jsonObjectCompetitor.put(COMPETITOR_IS_TOP_TAG, arr.get(i).isTop);
+            jsonArrayRes.put(jsonObjectCompetitor);
+        }
+        return jsonArrayRes.toString();
+    }
 
-    public static ArrayList<CompetitionsRoutesEntry> parseCompRoutesToArray(String content) throws
+    public static ArrayList<CompetitorEntry.RouteResultData> parseRouteResultDataToArray(String content) throws
             JSONException,
             BadResponseException {
         final JSONArray json = new JSONArray(content);
-        return parseCompRoutesToArray(json);
+        return parseRouteResultDataToArray(json);
+    }
+
+    private static ArrayList<CompetitorEntry.RouteResultData> parseRouteResultDataToArray(JSONArray json) throws
+            JSONException, BadResponseException {
+        final ArrayList<CompetitorEntry.RouteResultData> resultArray = new ArrayList<>(json.length());
+
+        for (int i = 0; i < json.length(); ++i) {
+            JSONObject jsonCompetitorEntry = json.getJSONObject(i);
+            final int last_hold = jsonCompetitorEntry.getInt(COMPETITOR_LAST_HOLD_TAG);
+            final boolean is_top = jsonCompetitorEntry.getBoolean(COMPETITOR_IS_TOP_TAG);
+            resultArray.add(new CompetitorEntry.RouteResultData(last_hold, is_top));
+        }
+        return resultArray;
+
     }
 
     public static ArrayList<CompetitorEntry> parseCompetitorsToArray(String content) throws
@@ -77,25 +88,8 @@ public class CompParse {
         return parseCompetitorsToArray(json);
     }
 
-    private static ArrayList<CompetitionsRoutesEntry> parseCompRoutesToArray(JSONArray json) throws
-            JSONException {
 
-        final ArrayList<CompetitionsRoutesEntry> resultArray = new ArrayList<>(json.length());
-
-        for (int i = 0; i < json.length(); ++i) {
-
-            JSONObject jsonRoute = json.getJSONObject(i);
-
-            final String name = jsonRoute.getString(ROUTE_NAME_TAG);
-            final double factor = jsonRoute.getDouble(ROUTE_FACTOR_TAG);
-            final int countOfHolds = jsonRoute.getInt(ROUTE_COUNT_TAG);
-
-            resultArray.add(new CompetitionsRoutesEntry(name, factor, countOfHolds));
-        }
-        return resultArray;
-    }
-
-    // FIXME: 19.12.2016 
+    // FIXME: 19.12.2016
     private static ArrayList<CompetitorEntry> parseCompetitorsToArray(JSONArray json) throws
             JSONException, BadResponseException {
         final ArrayList<CompetitorEntry> resultArray = new ArrayList<>(json.length());

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.AnyThread;
 import android.support.annotation.NonNull;
@@ -23,15 +22,18 @@ import ru.climbing.itmo.itmoclimbing.model.CompetitionsEntry;
 import ru.climbing.itmo.itmoclimbing.model.CompetitionsRoutesEntry;
 import ru.climbing.itmo.itmoclimbing.model.CompetitorEntry;
 ;
+import static ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsCacheContract.CompetitionsCacheColumns.COMPETITORS_COMPONENTS;
+import static ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsCacheContract.CompetitionsCacheColumns.COMPETITOR_IS_TOP;
+import static ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsCacheContract.CompetitionsCacheColumns.COMPETITOR_LAST_HOLD;
+import static ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsCacheContract.CompetitionsCacheColumns.COMPETITOR_NAME;
 import static ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsCacheContract.CompetitionsCacheColumns.FACTOR;
 import static ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsCacheContract.CompetitionsCacheColumns.HOLDS_COUNT;
+import static ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsCacheContract.CompetitionsCacheColumns.ROUTES_COMPONENTS;
 import static ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsCacheContract.CompetitionsCacheColumns.ROUTE_NAME;
 import static ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsCacheContract.CompetitionsCached.COMPETITIONS_TABLE;
 import static ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsCacheContract.CompetitionsCacheColumns.COMPETITION_COMPONENTS;
 import static ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsCacheContract.CompetitionsCacheColumns.COMPETITION_NAME;
-import static ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsCacheContract.CompetitionsCacheColumns.COMPETITION_ROUTES;
 import static ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsCacheContract.CompetitionsCacheColumns.COMPETITION_TYPE;
-import static ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsCacheContract.CompetitionsCacheColumns.COMPETITORS;
 import static ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsCacheContract.CompetitionsCacheColumns.IS_ACTIVE;
 
 /**
@@ -58,7 +60,12 @@ public class CompetitionsCache {
         insert.bindDouble(2, route.routeFactor);
         insert.bindLong(3, route.holdsCount);
     }
+    private void fillCompetitorStatement(SQLiteStatement insert,
+                                    CompetitorEntry competitor) throws JSONException {
+        insert.bindString(1, competitor.competitorName);
+        insert.bindString(2, CompParse.parseRoutesDataToString(competitor.competitorsRouteResultData));
 
+    }
     @AnyThread
     public CompetitionsCache(@NonNull Context context) {
         this.context = context.getApplicationContext();
@@ -108,10 +115,8 @@ public class CompetitionsCache {
         String insertion = "INSERT INTO " + CompetitionsCacheContract.CompetitionsCached.COMPETITIONS_TABLE + " ("
                 + COMPETITION_NAME + ", "
                 + COMPETITION_TYPE + ", "
-                + IS_ACTIVE + ", "
-                + COMPETITION_ROUTES + ", "
-                + COMPETITORS;
-        insertion += ") VALUES(?, ?, ?, ?, ?)";
+                + IS_ACTIVE;
+        insertion += ") VALUES(?, ?, ?)";
 
         try (SQLiteStatement insert = db.compileStatement(insertion)) {
             for (int i = 0; i < competitionsList.size(); i++) {
@@ -129,7 +134,7 @@ public class CompetitionsCache {
     public void putRoutes (@NonNull CompetitionsRoutesEntry competitionsRoutesEntry, int competitionID) {
         SQLiteDatabase db = CompetitionsDBHelper.getInstance(context).getReadableDatabase();
         String tableName = CompetitionsCacheContract.CompetitionsCached
-                .getTableName(competitionID);
+                .getRoutesTableName(competitionID);
         db.execSQL(CompetitionsCacheContract.CompetitionsCached
                 .getCommandCreateCompetitionsRoutesTable(competitionID));
 
@@ -151,6 +156,108 @@ public class CompetitionsCache {
             db.endTransaction();
         }
     }
+
+    public ArrayList<CompetitionsRoutesEntry> getRoutesList (int competitionID)
+            throws FileNotFoundException {
+        SQLiteDatabase db = CompetitionsDBHelper.getInstance(context).getReadableDatabase();
+        db.execSQL(CompetitionsCacheContract.CompetitionsCached
+                .getCommandCreateCompetitionsRoutesTable(competitionID));
+        String tableName = CompetitionsCacheContract.CompetitionsCached
+                .getRoutesTableName(competitionID);
+        String[] projection = ROUTES_COMPONENTS;
+        ArrayList<CompetitionsRoutesEntry> routesTable = new ArrayList<>();
+        try (Cursor cursor = db.query(
+                tableName,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                for (; !cursor.isAfterLast(); cursor.moveToNext()) {
+                    String routeName = cursor.getString(0);
+                    int routeFactor = cursor.getInt(1);
+                    int routeHoldsCount = cursor.getInt(2);
+                    routesTable.add(new CompetitionsRoutesEntry(routeName, routeFactor, routeHoldsCount));
+                }
+            } else {
+                throw new FileNotFoundException("!!!");
+            }
+        } catch (SQLiteException e) {
+            Log.wtf(TAG, "Query error: ", e);
+            throw new FileNotFoundException("...");
+        }
+        return routesTable;
+    }
+
+    public void putCompetitors (@NonNull CompetitorEntry competitorEntry, int competitionID) {
+        SQLiteDatabase db = CompetitionsDBHelper.getInstance(context).getReadableDatabase();
+        String tableName = CompetitionsCacheContract.CompetitionsCached
+                .getCompetitorsTableName(competitionID);
+        db.execSQL(CompetitionsCacheContract.CompetitionsCached
+                .getCommandCreateCompetitorsTable(competitionID));
+
+        db.beginTransaction();
+        String insertion = "INSERT INTO " + tableName + " ("
+                + COMPETITOR_NAME + ", "
+                + COMPETITOR_LAST_HOLD + ", "
+                + COMPETITOR_IS_TOP;
+        insertion += ") VALUES(?, ?, ?)";
+
+        try (SQLiteStatement insert = db.compileStatement(insertion)) {
+            fillCompetitorStatement(insert, competitorEntry);
+            insert.executeInsert();
+
+            db.setTransactionSuccessful();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+
+    public ArrayList<CompetitorEntry> getCompetitorList (int competitionID)
+            throws FileNotFoundException {
+        SQLiteDatabase db = CompetitionsDBHelper.getInstance(context).getReadableDatabase();
+        db.execSQL(CompetitionsCacheContract.CompetitionsCached
+                .getCommandCreateCompetitorsTable(competitionID));
+        String tableName = CompetitionsCacheContract.CompetitionsCached
+                .getCompetitorsTableName(competitionID);
+        String[] projection = COMPETITORS_COMPONENTS;
+        ArrayList<CompetitorEntry> competitorTable = new ArrayList<>();
+        try (Cursor cursor = db.query(
+                tableName,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                for (; !cursor.isAfterLast(); cursor.moveToNext()) {
+                    String competitorName = cursor.getString(0);
+                    ArrayList<CompetitorEntry.RouteResultData> competitorsRouteResultData
+                            = CompParse.parseRouteResultDataToArray(cursor.getString(1));
+                    int routeHoldsCount = cursor.getInt(2);
+                    competitorTable.add(new CompetitorEntry(competitorName, competitorsRouteResultData.size()));
+                }
+            } else {
+                throw new FileNotFoundException("!!!");
+            }
+        } catch (SQLiteException e) {
+            Log.wtf(TAG, "Query error: ", e);
+            throw new FileNotFoundException("...");
+        } catch (BadResponseException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return competitorTable;
+    }
+
+
 
     private static final String TAG = "CompTableCache";
 
