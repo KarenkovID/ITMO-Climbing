@@ -20,12 +20,12 @@
             android:title="@string/profile" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="Usefull">
         <menu>
             <item
                 android:id="@+id/competitions_manager"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:title="@string/competitions_manager" />
         </menu>
     </item>
 

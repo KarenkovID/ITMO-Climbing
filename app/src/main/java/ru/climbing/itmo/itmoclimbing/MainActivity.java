@@ -2,6 +2,7 @@ package ru.climbing.itmo.itmoclimbing;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -30,8 +31,12 @@ import ru.climbing.itmo.itmoclimbing.graphicPart.GLActivity;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+    public static final String TAG = MainActivity.class.getSimpleName();
 
-    CircleImageView profileImage;
+    private CircleImageView profileImage;
+    private NavigationView mNavigationView;
+    private DrawerLayout mDrawerLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,24 +50,22 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, GLActivity.class);
-
                 if (intent != null) {
                     startActivity(intent);
                 }
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+                this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        mNavigationView.setNavigationItemSelectedListener(this);
 
-
-        View headerView = navigationView.getHeaderView(0);
+        View headerView = mNavigationView.getHeaderView(0);
 
         profileImage = (CircleImageView)headerView.findViewById(R.id.nav_view_profile_image);
         profileImage.setOnClickListener(this);
@@ -85,10 +88,18 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            onNavigationItemSelected(mNavigationView.getMenu().findItem(R.id.nav_routs));
+        }
+    }
+
+    @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
@@ -120,6 +131,7 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        Log.d(TAG, "onNavigationItemSelected: " + item.toString());
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         Fragment fragment = null;
@@ -135,6 +147,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.competitions_manager) {
             Intent intent = new Intent(this, CompetitionManagerActivity.class);
             startActivity(intent);
+            return true;
         }
         if (fragmentClass == null) {
             return false;
@@ -154,13 +167,9 @@ public class MainActivity extends AppCompatActivity
         setTitle(item.getTitle());
 
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    public void changeFragment(Class fragmentClass) {
-
     }
 
     @Override
@@ -188,7 +197,8 @@ public class MainActivity extends AppCompatActivity
         setTitle(getString(R.string.profile));
 
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
     }
+
 }
