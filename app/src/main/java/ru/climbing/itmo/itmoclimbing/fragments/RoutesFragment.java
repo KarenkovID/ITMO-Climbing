@@ -2,6 +2,7 @@ package ru.climbing.itmo.itmoclimbing.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -31,9 +32,12 @@ public class RoutesFragment extends Fragment implements
     public static final String TAG = RoutesFragment.class.getSimpleName();
     private static String ROUTES_LIST_TAG = "routesList";
 
+    public static final int LOADER_ID = 0;
+
     private RecyclerView rvRoutes;
     private ProgressBar progressBar;
     private RoutesRecyclerAdapter recyclerAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TextView tvErrorMessage;
 
@@ -64,29 +68,42 @@ public class RoutesFragment extends Fragment implements
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         tvErrorMessage = (TextView) rootView.findViewById(R.id.tvError);
 
-        recyclerAdapter = new RoutesRecyclerAdapter(getContext());
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeRefreshLayout);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        // делаем повеселее
+        mSwipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED);
+
+        if (recyclerAdapter == null) {
+            Log.d(TAG, "onViewCreated: recyclerAdapter = null");
+            recyclerAdapter = new RoutesRecyclerAdapter(getContext());
+        }
         rvRoutes.setAdapter(recyclerAdapter);
-        // TODO: 20.12.2016 нужны ли для этого отдельные поля в классе? 
-        rvRoutes.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        if (mLayoutManager == null) {
+            Log.d(TAG, "onViewCreated: mLayoutManager = null");
+            mLayoutManager = new LinearLayoutManager(getContext());
+        } else {
+            Parcelable layoutManagerState = mLayoutManager.onSaveInstanceState();
+            mLayoutManager = new LinearLayoutManager(getContext());
+            mLayoutManager.onRestoreInstanceState(layoutManagerState);
+        }
+        rvRoutes.setLayoutManager(mLayoutManager);
 
         if (mRoutesList == null) {
-            getActivity().getSupportLoaderManager().initLoader(0, null, this);
-            progressBar.setVisibility(View.VISIBLE);
+            Log.d(TAG, "onViewCreated: mRoutesList = null");
+            getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null, this);
         } else {
             recyclerAdapter.setRoutesData(mRoutesList);
             rvRoutes.setVisibility(View.VISIBLE);
         }
 
-
-
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeRefreshLayout);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
-        // делаем повеселее
-        mSwipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED);
     }
 
     @Override
     public Loader<LoadResult<ArrayList<Route>>> onCreateLoader(int id, Bundle args) {
+        progressBar.setVisibility(View.VISIBLE);
+        tvErrorMessage.setVisibility(View.GONE);
+        rvRoutes.setVisibility(View.GONE);
         return new RoutesLoader(getContext(), null);
     }
 
@@ -125,7 +142,7 @@ public class RoutesFragment extends Fragment implements
     @Override
     public void onRefresh() {
         Log.d(TAG, "onRefresh: try to refresh data");
-        getActivity().getSupportLoaderManager().restartLoader(0, null, this);
+        getActivity().getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
     }
 
     @Override

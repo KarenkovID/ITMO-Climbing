@@ -17,4 +17,5 @@
     <string name="button_registration">Регистрация</string>
     <string name="create">Создать</string>
     <string name="cancel">Отмена</string>
+    <string name="position">Место</string>
 </resources>

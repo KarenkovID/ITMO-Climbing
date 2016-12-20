@@ -15,11 +15,11 @@ public class Athlete implements Parcelable{
     /**
      * имя спортсмена
      */
-    public final String lastName;
+    public final String firstName;
     /**
      * фамилия спортсмена
      */
-    public final String firstName;
+    public final String lastName;
     /**
      * балы спортсмена за пролазы трасс
      */

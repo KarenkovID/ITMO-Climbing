@@ -1,7 +1,6 @@
 package ru.climbing.itmo.itmoclimbing;
 
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -23,8 +22,8 @@ import android.view.MenuItem;
 import com.facebook.stetho.Stetho;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import ru.climbing.itmo.itmoclimbing.fragments.AthletesFragment;
 import ru.climbing.itmo.itmoclimbing.fragments.FestivalFragment;
-import ru.climbing.itmo.itmoclimbing.fragments.MembersFragment;
 import ru.climbing.itmo.itmoclimbing.fragments.ProfileFragment;
 import ru.climbing.itmo.itmoclimbing.fragments.RoutesFragment;
 import ru.climbing.itmo.itmoclimbing.graphicPart.GLActivity;
@@ -128,7 +127,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_routs) {
             fragmentClass = RoutesFragment.class;
         } else if (id == R.id.nav_members) {
-            fragmentClass = MembersFragment.class;
+            fragmentClass = AthletesFragment.class;
         } else if (id == R.id.nav_festival) {
             fragmentClass = FestivalFragment.class;
         } else if (id == R.id.nav_profile) {

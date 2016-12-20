@@ -12,7 +12,6 @@ import java.util.ArrayList;
 
 import ru.climbing.itmo.itmoclimbing.R;
 import ru.climbing.itmo.itmoclimbing.model.Athlete;
-import ru.climbing.itmo.itmoclimbing.model.Route;
 
 /**
  * Created by Игорь on 20.12.2016.
@@ -31,37 +30,39 @@ public class AthletesRecyclerAdapter extends RecyclerView.Adapter<AthletesRecycl
 
     @Override
     public AthleteVH onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new AthleteVH(layoutInflater.inflate(R.layout.route_card, parent, false));
+        return new AthleteVH(layoutInflater.inflate(R.layout.athlete_card, parent, false));
     }
 
     @Override
     public void onBindViewHolder(AthleteVH holder, int position) {
         Athlete athlete = athletesData.get(position);
-        holder.tvGrade.setText(route.grade.grade);
-        holder.tvRouteName.setText(route.name);
+        holder.tvFirstName.setText(athlete.firstName);
+        holder.tvLastName.setText(athlete.lastName);
+        holder.tvPosition.setText(String.valueOf(athlete.position));
     }
 
-    public void setAthletesData(ArrayList<Athlete> routesData) {
-        this.routesData = routesData;
+    public void setAthletesData(ArrayList<Athlete> athletesData) {
+        this.athletesData = athletesData;
         notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        return routesData != null ? routesData.size() : 0;
+        return athletesData != null ? athletesData.size() : 0;
     }
 
     public static class AthleteVH extends RecyclerView.ViewHolder {
-        // FIXME: 20.12.2016
-        private final ImageView ivMark;
-        private final TextView tvRouteName;
-        private final TextView tvGrade;
+        private final ImageView ivPhoto;
+        private final TextView tvFirstName;
+        private final TextView tvLastName;
+        private final TextView tvPosition;
 
         public AthleteVH(View itemView) {
             super(itemView);
-            ivMark = (ImageView) itemView.findViewById(R.id.ivMark);
-            tvRouteName = (TextView) itemView.findViewById(R.id.tvRouteName);
-            tvGrade = (TextView) itemView.findViewById(R.id.tvGrade);
+            ivPhoto = (ImageView) itemView.findViewById(R.id.ivPhoto);
+            tvFirstName = (TextView) itemView.findViewById(R.id.tvFirstName);
+            tvLastName = (TextView) itemView.findViewById(R.id.tvLastName);
+            tvPosition = (TextView) itemView.findViewById(R.id.tvPosition);
         }
     }
 }
