@@ -1,7 +1,6 @@
 package ru.climbing.itmo.itmoclimbing.loader;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
@@ -15,19 +14,18 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 import ru.climbing.itmo.itmoclimbing.api.ItmoClimbingApi;
+import ru.climbing.itmo.itmoclimbing.model.Athlete;
 import ru.climbing.itmo.itmoclimbing.model.Route;
 import ru.climbing.itmo.itmoclimbing.utils.IOUtils;
 
-
 /**
- * Created by Игорь on 19.11.2016.
+ * Created by Игорь on 20.12.2016.
  */
 
-public class RoutesLoader extends AsyncTaskLoader<LoadResult<ArrayList<Route>>> {
+public class AthleteListLoader extends AsyncTaskLoader<LoadResult<ArrayList<Athlete>>> {
+    public static final String TAG = Athlete.class.getSimpleName();
 
-    public static final String TAG = "RoutesLoader";
-
-    public RoutesLoader(Context context, Bundle args) {
+    public AthleteListLoader(Context context) {
         super(context);
     }
 
@@ -37,30 +35,30 @@ public class RoutesLoader extends AsyncTaskLoader<LoadResult<ArrayList<Route>>> 
     }
 
     @Override
-    public LoadResult<ArrayList<Route>> loadInBackground() {
+    public LoadResult<ArrayList<Athlete>> loadInBackground() {
         LoadResult<InputStream> loadResult;
         HttpURLConnection connection = null;
         InputStream in = null;
         try {
             try {
-                connection = ItmoClimbingApi.getRoutesRequest();
+                connection = ItmoClimbingApi.getAthleteInfoListRequest();
                 loadResult = LoadUtils.loadToStream(connection, getContext());
             } catch (IOException e) {
                 Log.e(TAG, "loadInBackground: error while do getRouteRequest", e);
                 return new LoadResult<>(ResultType.ERROR, null);
             }
-            ArrayList<Route> routesList = null;
+            ArrayList<Athlete> athletesList = null;
             ResultType resultType = loadResult.resultType;
             if (resultType == ResultType.OK) {
                 try {
                     in = loadResult.data;
-                    routesList = JsonDOMParser.parseRoutes(in);
+                    athletesList = JsonDOMParser.parseAthletes(in);
                 } catch (JSONException | BadResponseException | IOException e) {
                     resultType = ResultType.ERROR;
                     Log.e(TAG, "loadInBackground: EROR WHILE PARSE JSON", e);
                 }
             }
-            return new LoadResult<>(resultType, routesList);
+            return new LoadResult<>(resultType, athletesList);
         } finally {
             if (in != null) {
                 IOUtils.closeSilently(in);

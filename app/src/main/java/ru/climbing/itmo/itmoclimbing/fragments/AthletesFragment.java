@@ -20,28 +20,32 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ru.climbing.itmo.itmoclimbing.R;
-import ru.climbing.itmo.itmoclimbing.adpters.RoutesRecyclerAdapter;
+import ru.climbing.itmo.itmoclimbing.adpters.AthletesRecyclerAdapter;
+import ru.climbing.itmo.itmoclimbing.loader.AthleteListLoader;
 import ru.climbing.itmo.itmoclimbing.loader.LoadResult;
 import ru.climbing.itmo.itmoclimbing.loader.ResultType;
-import ru.climbing.itmo.itmoclimbing.loader.RoutesLoader;
-import ru.climbing.itmo.itmoclimbing.model.Route;
+import ru.climbing.itmo.itmoclimbing.model.Athlete;
 
-public class RoutesFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<LoadResult<ArrayList<Route>>>,
-        SwipeRefreshLayout.OnRefreshListener {
-    public static final String TAG = RoutesFragment.class.getSimpleName();
-    private static String ROUTES_LIST_TAG = "routesList";
+/**
+ * Created by Игорь on 20.12.2016.
+ */
 
-    public static final int LOADER_ID = 0;
+public class AthletesFragment extends Fragment implements
+        LoaderManager.LoaderCallbacks<LoadResult<ArrayList<Athlete>>>,
+        SwipeRefreshLayout.OnRefreshListener{
+    public static final String TAG = AthletesFragment.class.getSimpleName();
+    private static String ATHLETES_LIST_TAG = "athletesList";
 
-    private RecyclerView rvRoutes;
-    private ProgressBar progressBar;
-    private RoutesRecyclerAdapter recyclerAdapter;
+    public static final int LOADER_ID = 1;
+
     private RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView rvAthletes;
+    private ProgressBar progressBar;
+    private AthletesRecyclerAdapter mRecyclerAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TextView tvErrorMessage;
 
-    private ArrayList<Route> mRoutesList;
+    private ArrayList<Athlete> mAthletesList;
 
 
     @Override
@@ -49,14 +53,14 @@ public class RoutesFragment extends Fragment implements
         Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            mRoutesList = savedInstanceState.getParcelableArrayList(ROUTES_LIST_TAG);
+            mAthletesList = savedInstanceState.getParcelableArrayList(ATHLETES_LIST_TAG);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return  inflater.inflate(R.layout.fragment_routes, container, false);
+        return  inflater.inflate(R.layout.fragment_athletes, container, false);
     }
 
     @Override
@@ -64,7 +68,7 @@ public class RoutesFragment extends Fragment implements
         Log.d(TAG, "onViewCreated");
         super.onViewCreated(rootView, savedInstanceState);
 
-        rvRoutes = (RecyclerView) rootView.findViewById(R.id.rvRoutes);
+        rvAthletes = (RecyclerView) rootView.findViewById(R.id.rvAthletes);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         tvErrorMessage = (TextView) rootView.findViewById(R.id.tvError);
 
@@ -73,50 +77,46 @@ public class RoutesFragment extends Fragment implements
         // делаем повеселее
         mSwipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED);
 
-        if (recyclerAdapter == null) {
-            Log.d(TAG, "onViewCreated: recyclerAdapter = null");
-            recyclerAdapter = new RoutesRecyclerAdapter(getContext());
+        if (mRecyclerAdapter == null) {
+            mRecyclerAdapter = new AthletesRecyclerAdapter(getContext());
         }
-        rvRoutes.setAdapter(recyclerAdapter);
+        rvAthletes.setAdapter(mRecyclerAdapter);
 
         if (mLayoutManager == null) {
-            Log.d(TAG, "onViewCreated: mLayoutManager = null");
             mLayoutManager = new LinearLayoutManager(getContext());
         } else {
             Parcelable layoutManagerState = mLayoutManager.onSaveInstanceState();
             mLayoutManager = new LinearLayoutManager(getContext());
             mLayoutManager.onRestoreInstanceState(layoutManagerState);
         }
-        rvRoutes.setLayoutManager(mLayoutManager);
+        rvAthletes.setLayoutManager(mLayoutManager);
 
-        if (mRoutesList == null) {
-            Log.d(TAG, "onViewCreated: mRoutesList = null");
+        if (mAthletesList == null) {
             getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null, this);
         } else {
-            recyclerAdapter.setRoutesData(mRoutesList);
-            rvRoutes.setVisibility(View.VISIBLE);
+            mRecyclerAdapter.setAthletesData(mAthletesList);
+            rvAthletes.setVisibility(View.VISIBLE);
         }
-
     }
 
     @Override
-    public Loader<LoadResult<ArrayList<Route>>> onCreateLoader(int id, Bundle args) {
+    public Loader<LoadResult<ArrayList<Athlete>>> onCreateLoader(int id, Bundle args) {
         progressBar.setVisibility(View.VISIBLE);
         tvErrorMessage.setVisibility(View.GONE);
-        rvRoutes.setVisibility(View.GONE);
-        return new RoutesLoader(getContext(), null);
+        rvAthletes.setVisibility(View.GONE);
+        return new AthleteListLoader(getContext());
     }
 
     @Override
-    public void onLoadFinished(Loader<LoadResult<ArrayList<Route>>> loader, LoadResult<ArrayList<Route>> data) {
+    public void onLoadFinished(Loader<LoadResult<ArrayList<Athlete>>> loader, LoadResult<ArrayList<Athlete>> data) {
         progressBar.setVisibility(View.GONE);
         mSwipeRefreshLayout.setRefreshing(false);
         if (data.resultType == ResultType.OK) {
             Log.d(TAG, "onLoadFinished: loading is done");
-            mRoutesList = data.data;
-            recyclerAdapter.setRoutesData(mRoutesList);
+            mAthletesList = data.data;
+            mRecyclerAdapter.setAthletesData(mAthletesList);
             tvErrorMessage.setVisibility(View.GONE);
-            rvRoutes.setVisibility(View.VISIBLE);
+            rvAthletes.setVisibility(View.VISIBLE);
         } else {
             //TODO: error message + button
             Log.d(TAG, "onLoadFinished: data doesn't downloaded");
@@ -128,14 +128,14 @@ public class RoutesFragment extends Fragment implements
                 Log.d(TAG, "onLoadFinished: something went wrong");
                 tvErrorMessage.setText(R.string.error);
             }
-            rvRoutes.setVisibility(View.GONE);
+            rvAthletes.setVisibility(View.GONE);
             tvErrorMessage.setVisibility(View.VISIBLE);
 
         }
     }
 
     @Override
-    public void onLoaderReset(Loader<LoadResult<ArrayList<Route>>> loader) {
+    public void onLoaderReset(Loader<LoadResult<ArrayList<Athlete>>> loader) {
 
     }
 
@@ -148,6 +148,6 @@ public class RoutesFragment extends Fragment implements
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(ROUTES_LIST_TAG, mRoutesList);
+        outState.putParcelableArrayList(ATHLETES_LIST_TAG, mAthletesList);
     }
 }
