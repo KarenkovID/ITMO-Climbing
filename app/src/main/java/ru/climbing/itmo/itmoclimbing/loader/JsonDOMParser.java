@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import ru.climbing.itmo.itmoclimbing.model.Athlete;
+import ru.climbing.itmo.itmoclimbing.model.AthleteRouteResult;
 import ru.climbing.itmo.itmoclimbing.model.Route;
 import ru.climbing.itmo.itmoclimbing.utils.IOUtils;
 
@@ -67,6 +68,30 @@ public final class JsonDOMParser {
             final double score = jsonAthlete.getDouble("score");
             final int position = jsonAthlete.getInt("position");
             resultArray.add(new Athlete(id, lastName, firstName, score, position));
+        }
+        return resultArray;
+    }
+
+    public static ArrayList<AthleteRouteResult> parseResultsTable(InputStream in) throws
+            IOException,
+            JSONException,
+            BadResponseException{
+        final String content = IOUtils.readToString(in, "UTF-8");
+        final JSONArray json = new JSONArray(content);
+        return parseResultsTable(json);
+    }
+
+    private static ArrayList<AthleteRouteResult> parseResultsTable(JSONArray json) throws
+            JSONException {
+        final ArrayList<AthleteRouteResult> resultArray = new ArrayList<AthleteRouteResult>(json.length());
+        for (int i = 0; i < json.length(); ++i) {
+            JSONObject jsonResult = json.getJSONObject(i);
+            final int athleteID = jsonResult.getInt("athlete_id");
+            final int routeID = jsonResult.getInt("route_id");
+            final JSONObject jsonRemark = jsonResult.getJSONObject("remark");
+            final String remark = jsonRemark.getString("remark");
+            final int remarkCoast = jsonResult.getInt("coast");
+            resultArray.add(new AthleteRouteResult(athleteID, routeID, remark, remarkCoast));
         }
         return resultArray;
     }
