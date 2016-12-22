@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
-import com.facebook.stetho.urlconnection.StethoURLConnectionManager;
-
 import org.json.JSONException;
 
 import java.io.FileNotFoundException;
@@ -16,7 +14,7 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 import ru.climbing.itmo.itmoclimbing.api.ItmoClimbingApi;
-import ru.climbing.itmo.itmoclimbing.cache.route_cache.RoutesCache;
+import ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.RoutesAndAthletesCache;
 import ru.climbing.itmo.itmoclimbing.model.Route;
 import ru.climbing.itmo.itmoclimbing.utils.IOUtils;
 
@@ -57,8 +55,8 @@ public class RoutesLoader extends AsyncTaskLoader<LoadResult<ArrayList<Route>>> 
                 try {
                     in = loadResult.data;
                     routesList = JsonDOMParser.parseRoutes(in);
-                    RoutesCache cache = new RoutesCache(getContext());
-                    cache.put(routesList);
+                    RoutesAndAthletesCache cache = new RoutesAndAthletesCache(getContext());
+                    cache.putRoutes(routesList);
 
                 } catch (JSONException | BadResponseException | IOException e) {
                     resultType = ResultType.ERROR;
@@ -67,7 +65,7 @@ public class RoutesLoader extends AsyncTaskLoader<LoadResult<ArrayList<Route>>> 
             } else if (resultType == ResultType.NO_INTERNET_LOADED_FROM_CACHE) {
                 // FIXME: 22.12.2016 Add new type of error
                 try {
-                    routesList = new RoutesCache(getContext()).get();
+                    routesList = new RoutesAndAthletesCache(getContext()).getRoutesList();
                 } catch (FileNotFoundException e) {
                     resultType = ResultType.ERROR;
                 }
