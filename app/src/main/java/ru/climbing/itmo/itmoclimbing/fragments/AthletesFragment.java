@@ -121,7 +121,7 @@ public class AthletesFragment extends Fragment implements
             //TODO: error message + button
             Log.d(TAG, "onLoadFinished: data doesn't downloaded");
             Log.d(TAG, data.resultType.toString());
-            if (data.resultType == ResultType.NO_INTERNET) {
+            if (data.resultType == ResultType.NO_INTERNET_LOADED_FROM_CACHE) {
                 Log.d(TAG, "onLoadFinished: no internet");
                 tvErrorMessage.setText(R.string.no_internet);
             } else {

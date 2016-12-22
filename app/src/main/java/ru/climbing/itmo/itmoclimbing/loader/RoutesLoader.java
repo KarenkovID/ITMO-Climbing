@@ -9,12 +9,14 @@ import com.facebook.stetho.urlconnection.StethoURLConnectionManager;
 
 import org.json.JSONException;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 import ru.climbing.itmo.itmoclimbing.api.ItmoClimbingApi;
+import ru.climbing.itmo.itmoclimbing.cache.route_cache.RoutesCache;
 import ru.climbing.itmo.itmoclimbing.model.Route;
 import ru.climbing.itmo.itmoclimbing.utils.IOUtils;
 
@@ -55,9 +57,19 @@ public class RoutesLoader extends AsyncTaskLoader<LoadResult<ArrayList<Route>>> 
                 try {
                     in = loadResult.data;
                     routesList = JsonDOMParser.parseRoutes(in);
+                    RoutesCache cache = new RoutesCache(getContext());
+                    cache.put(routesList);
+
                 } catch (JSONException | BadResponseException | IOException e) {
                     resultType = ResultType.ERROR;
                     Log.e(TAG, "loadInBackground: EROR WHILE PARSE JSON", e);
+                }
+            } else if (resultType == ResultType.NO_INTERNET_LOADED_FROM_CACHE) {
+                // FIXME: 22.12.2016 Add new type of error
+                try {
+                    routesList = new RoutesCache(getContext()).get();
+                } catch (FileNotFoundException e) {
+                    resultType = ResultType.ERROR;
                 }
             }
             return new LoadResult<>(resultType, routesList);

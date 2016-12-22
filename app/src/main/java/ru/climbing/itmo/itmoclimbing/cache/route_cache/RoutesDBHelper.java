@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import ru.climbing.itmo.itmoclimbing.cache.utils.DBCorruptionHandler;
 
-import static ru.climbing.itmo.itmoclimbing.cache.route_cache.RouteCacheContract.RoutesCached.CREATE_ROUTES_TABLE;
+import static ru.climbing.itmo.itmoclimbing.cache.route_cache.RoutesCacheContract.RoutesCached.CREATE_ROUTES_TABLE;
 
 /**
  * Created by macbook on 16.12.16.
@@ -20,7 +20,7 @@ public class RoutesDBHelper extends SQLiteOpenHelper {
 
 
     public RoutesDBHelper(Context context) {
-        super(context, DB_FILE_NAME, null, 0, // TODO fix version
+        super(context, DB_FILE_NAME, null, 1, // TODO fix version
                 new DBCorruptionHandler(context, DB_FILE_NAME));
     }
 

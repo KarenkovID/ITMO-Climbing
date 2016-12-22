@@ -110,7 +110,6 @@ public class SelectCompetitionFragment extends Fragment implements
             if (mAddCompetitionDialog == null) {
                 mAddCompetitionDialog = new AddCompetitionDialogFragment();
             }
-            mAddCompetitionDialog.setTargetFragment(this, REQUEST_COMPETITION_NAME_TAG);
             mAddCompetitionDialog.show(
                     getChildFragmentManager(), mAddCompetitionDialog.getClass().getName());
         }
@@ -175,7 +174,7 @@ public class SelectCompetitionFragment extends Fragment implements
 
     @Override
     public void onClick(int position) {
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentManager fragmentManager = getChildFragmentManager();
         if (fragmentManager.findFragmentByTag(CompetitionInfoFragment.TAG) == null) {
             fragmentManager.beginTransaction()
                     .replace(R.id.container, CompetitionInfoFragment.newInstance(
@@ -183,6 +182,18 @@ public class SelectCompetitionFragment extends Fragment implements
                     .addToBackStack(CompetitionManagerActivity.BACK_STACK_TAG)
                     .commit();
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        Log.d(TAG, "onDestroyView");
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "onDestroy");
+        super.onDestroy();
     }
 
     public static class CompetitionsRecyclerAdapter

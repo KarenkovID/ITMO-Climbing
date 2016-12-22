@@ -50,7 +50,7 @@ public class LoadUtils {
             if (IOUtils.isConnectionAvailable(context, false)) {
                 resultType = ResultType.ERROR;
             } else {
-                resultType = ResultType.NO_INTERNET;
+                resultType = ResultType.NO_INTERNET_LOADED_FROM_CACHE;
             }
         } catch (BadResponseException e) {
             e.printStackTrace();
