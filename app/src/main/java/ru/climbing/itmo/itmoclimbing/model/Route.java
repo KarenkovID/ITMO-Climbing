@@ -51,6 +51,8 @@ public class Route implements Parcelable {
         }
     }
 
+    public final int id;
+
     /**
      * Название трассы
      */
@@ -79,12 +81,14 @@ public class Route implements Parcelable {
     public final boolean isActive;
 
     public Route(
+            int id,
             @NonNull String name,
             @NonNull String grade,
             int cost,
             @NonNull String author,
             @NonNull String description,
             boolean isActive) {
+        this.id = id;
         this.name = name;
         this.grade = new Grade(grade, cost);
         this.author = author;
@@ -93,6 +97,7 @@ public class Route implements Parcelable {
     }
 
     protected Route(Parcel in) {
+        id = in.readInt();
         name = in.readString();
         grade = in.readParcelable(Grade.class.getClassLoader());
         description = in.readString();
@@ -119,6 +124,7 @@ public class Route implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
         dest.writeString(name);
         dest.writeParcelable(grade, flags);
         dest.writeString(description);

@@ -111,7 +111,8 @@ public class AthletesFragment extends Fragment implements
     public void onLoadFinished(Loader<LoadResult<ArrayList<Athlete>>> loader, LoadResult<ArrayList<Athlete>> data) {
         progressBar.setVisibility(View.GONE);
         mSwipeRefreshLayout.setRefreshing(false);
-        if (data.resultType == ResultType.OK) {
+        // FIXME: 23.12.2016
+        if (data.resultType == ResultType.OK || data.resultType == ResultType.NO_INTERNET_LOADED_FROM_CACHE) {
             Log.d(TAG, "onLoadFinished: loading is done");
             mAthletesList = data.data;
             mRecyclerAdapter.setAthletesData(mAthletesList);
@@ -121,7 +122,7 @@ public class AthletesFragment extends Fragment implements
             //TODO: error message + button
             Log.d(TAG, "onLoadFinished: data doesn't downloaded");
             Log.d(TAG, data.resultType.toString());
-            if (data.resultType == ResultType.NO_INTERNET) {
+            if (data.resultType == ResultType.NO_INTERNET_LOADED_FROM_CACHE) {
                 Log.d(TAG, "onLoadFinished: no internet");
                 tvErrorMessage.setText(R.string.no_internet);
             } else {

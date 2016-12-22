@@ -42,10 +42,6 @@ public class CompetitionsCache {
     @NonNull
     private final Context context;
 
-//    private static ArrayList<CompetitionsEntry> mCompetitionsList;
-//    private static ArrayList<ArrayList<CompetitionsRoutesEntry>> mCompetitionsRouuteList;
-//    private static ArrayList<ArrayList<CompetitorEntry>> mCompetitorsList;
-
     private void fillCompetitionStatement(SQLiteStatement insert,
                           CompetitionsEntry competition) throws JSONException {
         insert.bindString(1, competition.competitionName);

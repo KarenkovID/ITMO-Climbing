@@ -1,33 +1,28 @@
 package ru.climbing.itmo.itmoclimbing.loader;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
 import org.json.JSONException;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 import ru.climbing.itmo.itmoclimbing.api.ItmoClimbingApi;
-import ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.RoutesAndAthletesCache;
-import ru.climbing.itmo.itmoclimbing.model.Route;
+import ru.climbing.itmo.itmoclimbing.model.AthleteRouteResult;
 import ru.climbing.itmo.itmoclimbing.utils.IOUtils;
 
-
 /**
- * Created by Игорь on 19.11.2016.
+ * Created by Игорь on 21.12.2016.
  */
 
-public class RoutesLoader extends AsyncTaskLoader<LoadResult<ArrayList<Route>>> {
+public class AthletsResultsTableLoader extends AsyncTaskLoader<LoadResult<ArrayList<AthleteRouteResult>>>{
+    public static final String TAG = AthleteRouteResult.class.getSimpleName();
 
-    public static final String TAG = "RoutesLoader";
-
-    public RoutesLoader(Context context, Bundle args) {
+    public AthletsResultsTableLoader(Context context) {
         super(context);
     }
 
@@ -37,40 +32,30 @@ public class RoutesLoader extends AsyncTaskLoader<LoadResult<ArrayList<Route>>> 
     }
 
     @Override
-    public LoadResult<ArrayList<Route>> loadInBackground() {
+    public LoadResult<ArrayList<AthleteRouteResult>> loadInBackground() {
         LoadResult<InputStream> loadResult;
         HttpURLConnection connection = null;
         InputStream in = null;
         try {
             try {
-                connection = ItmoClimbingApi.getRoutesRequest();
+                connection = ItmoClimbingApi.getAthletesRoutesResulteTableRequest();
                 loadResult = LoadUtils.loadToStream(connection, getContext());
             } catch (IOException e) {
                 Log.e(TAG, "loadInBackground: error while do getRouteRequest", e);
                 return new LoadResult<>(ResultType.ERROR, null);
             }
-            ArrayList<Route> routesList = null;
+            ArrayList<AthleteRouteResult> resultsTable = null;
             ResultType resultType = loadResult.resultType;
-            //If data was loaded from server
             if (resultType == ResultType.OK) {
                 try {
                     in = loadResult.data;
-                    routesList = JsonDOMParser.parseRoutes(in);
-                    RoutesAndAthletesCache cache = new RoutesAndAthletesCache(getContext());
-                    cache.putRoutes(routesList);
+                    resultsTable = JsonDOMParser.parseResultsTable(in);
                 } catch (JSONException | BadResponseException | IOException e) {
                     resultType = ResultType.ERROR;
-                    Log.e(TAG, "loadInBackground: ERROR WHILE PARSE JSON", e);
-                }
-            } else if (resultType == ResultType.NO_INTERNET_LOADED_FROM_CACHE) {
-                // FIXME: 22.12.2016 Add new type of error
-                try {
-                    routesList = new RoutesAndAthletesCache(getContext()).getRoutesList();
-                } catch (FileNotFoundException e) {
-                    resultType = ResultType.ERROR;
+                    Log.e(TAG, "loadInBackground: EROR WHILE PARSE JSON", e);
                 }
             }
-            return new LoadResult<>(resultType, routesList);
+            return new LoadResult<>(resultType, resultsTable);
         } finally {
             if (in != null) {
                 IOUtils.closeSilently(in);

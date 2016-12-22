@@ -29,10 +29,10 @@ public class Athlete implements Parcelable{
      */
     public final int position;
 
-    public Athlete(int id, String lastName, String firstName, double score, int position) {
+    public Athlete(int id, String firstName, String lastName, double score, int position) {
         this.id = id;
-        this.lastName = lastName;
         this.firstName = firstName;
+        this.lastName = lastName;
         this.score = score;
         this.position = position;
     }

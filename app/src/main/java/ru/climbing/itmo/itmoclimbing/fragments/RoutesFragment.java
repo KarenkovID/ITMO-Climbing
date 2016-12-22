@@ -111,7 +111,8 @@ public class RoutesFragment extends Fragment implements
     public void onLoadFinished(Loader<LoadResult<ArrayList<Route>>> loader, LoadResult<ArrayList<Route>> data) {
         progressBar.setVisibility(View.GONE);
         mSwipeRefreshLayout.setRefreshing(false);
-        if (data.resultType == ResultType.OK) {
+        // FIXME: 22.12.2016 Chenge result type
+        if (data.resultType == ResultType.OK || data.resultType == ResultType.NO_INTERNET_LOADED_FROM_CACHE) {
             Log.d(TAG, "onLoadFinished: loading is done");
             mRoutesList = data.data;
             recyclerAdapter.setRoutesData(mRoutesList);
@@ -121,7 +122,7 @@ public class RoutesFragment extends Fragment implements
             //TODO: error message + button
             Log.d(TAG, "onLoadFinished: data doesn't downloaded");
             Log.d(TAG, data.resultType.toString());
-            if (data.resultType == ResultType.NO_INTERNET) {
+            if (data.resultType == ResultType.NO_INTERNET_LOADED_FROM_CACHE) {
                 Log.d(TAG, "onLoadFinished: no internet");
                 tvErrorMessage.setText(R.string.no_internet);
             } else {

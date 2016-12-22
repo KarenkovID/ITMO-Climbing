@@ -1,26 +1,26 @@
-package ru.climbing.itmo.itmoclimbing.cache.route_cache;
+package ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import ru.climbing.itmo.itmoclimbing.cache.utils.DBCorruptionHandler;
+import ru.climbing.itmo.itmoclimbing.model.Athlete;
 
-import static ru.climbing.itmo.itmoclimbing.cache.route_cache.RouteCacheContract.RoutesCached.CREATE_ROUTES_TABLE;
-
-/**
- * Created by macbook on 16.12.16.
- */
+import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.AthletesCacheContract.CREATE_ATHLETES_TABLE;
+import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.RoutesCacheContract.CREATE_ROUTES_TABLE;
 
 public class RoutesDBHelper extends SQLiteOpenHelper {
 
+    public static final String TAG = RoutesDBHelper.class.getSimpleName();
+
     private static final String DB_FILE_NAME = "competitions.db";
     private static volatile RoutesDBHelper instance;
-    private Context context;
 
 
     public RoutesDBHelper(Context context) {
-        super(context, DB_FILE_NAME, null, 0, // TODO fix version
+        super(context, DB_FILE_NAME, null, 1, // TODO fix version
                 new DBCorruptionHandler(context, DB_FILE_NAME));
     }
 
@@ -37,7 +37,9 @@ public class RoutesDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        Log.d(TAG, "onCreate: " + "CREATE_ROUTES_TABLE");
         db.execSQL(CREATE_ROUTES_TABLE);
+        db.execSQL(CREATE_ATHLETES_TABLE);
     }
 
     @Override

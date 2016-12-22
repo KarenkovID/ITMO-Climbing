@@ -30,4 +30,10 @@ public class ItmoClimbingApi {
                 .appendEncodedPath("athletes/?format=json").build();
         return (HttpURLConnection) new URL(uri.toString()).openConnection();
     }
+
+    public static HttpURLConnection getAthletesRoutesResulteTableRequest() throws IOException{
+        Uri uri = BASE_URI.buildUpon()
+                .appendEncodedPath("athlete_routes/?format=json").build();
+        return (HttpURLConnection) new URL(uri.toString()).openConnection();
+    }
 }
