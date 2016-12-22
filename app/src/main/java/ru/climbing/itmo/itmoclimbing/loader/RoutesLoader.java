@@ -51,13 +51,13 @@ public class RoutesLoader extends AsyncTaskLoader<LoadResult<ArrayList<Route>>> 
             }
             ArrayList<Route> routesList = null;
             ResultType resultType = loadResult.resultType;
+            //If data was loaded from server
             if (resultType == ResultType.OK) {
                 try {
                     in = loadResult.data;
                     routesList = JsonDOMParser.parseRoutes(in);
                     RoutesAndAthletesCache cache = new RoutesAndAthletesCache(getContext());
                     cache.putRoutes(routesList);
-
                 } catch (JSONException | BadResponseException | IOException e) {
                     resultType = ResultType.ERROR;
                     Log.e(TAG, "loadInBackground: ERROR WHILE PARSE JSON", e);

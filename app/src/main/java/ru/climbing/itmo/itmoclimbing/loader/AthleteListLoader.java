@@ -8,6 +8,7 @@ import com.facebook.stetho.urlconnection.StethoURLConnectionManager;
 
 import org.json.JSONException;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -50,6 +51,7 @@ public class AthleteListLoader extends AsyncTaskLoader<LoadResult<ArrayList<Athl
             }
             ArrayList<Athlete> athletesList = null;
             ResultType resultType = loadResult.resultType;
+            Log.d(TAG, "loadInBackground: result type " + resultType);
             if (resultType == ResultType.OK) {
                 try {
                     in = loadResult.data;
@@ -58,7 +60,16 @@ public class AthleteListLoader extends AsyncTaskLoader<LoadResult<ArrayList<Athl
                     cache.putAthletes(athletesList);
                 } catch (JSONException | BadResponseException | IOException e) {
                     resultType = ResultType.ERROR;
-                    Log.e(TAG, "loadInBackground: EROR WHILE PARSE JSON", e);
+                    Log.e(TAG, "loadInBackground: ERROR WHILE PARSE JSON", e);
+                }
+            } else if (resultType == ResultType.NO_INTERNET_LOADED_FROM_CACHE) {
+                Log.d(TAG, "loadInBackground: try to load fata from cache");
+                // FIXME: 22.12.2016 Add new type of error
+                try {
+                    athletesList = new RoutesAndAthletesCache(getContext()).getAthletesList();
+                } catch (FileNotFoundException e) {
+                    Log.e(TAG, "loadInBackground: error in db ", e);
+                    resultType = ResultType.ERROR;
                 }
             }
             return new LoadResult<>(resultType, athletesList);
