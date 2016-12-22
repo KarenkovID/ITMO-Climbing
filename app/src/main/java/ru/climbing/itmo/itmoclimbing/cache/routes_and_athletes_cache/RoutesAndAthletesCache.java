@@ -10,8 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
 
-import org.json.JSONException;
-
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +26,9 @@ import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.Rout
 import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.RoutesCacheContract.RouteCacheColumns.ROUTE_DESCRIPTION;
 import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.RoutesCacheContract.RouteCacheColumns.ROUTE_GRADE;
 import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.RoutesCacheContract.RouteCacheColumns.ROUTE_GRADE_COAST;
+import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.RoutesCacheContract.RouteCacheColumns.ROUTE_ID;
 import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.RoutesCacheContract.RouteCacheColumns.ROUTE_IS_ACTIVE;
 import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.RoutesCacheContract.RouteCacheColumns.ROUTE_NAME;
-
-/**
- * Created by macbook on 18.12.16.
- */
 
 public class RoutesAndAthletesCache {
     public static final String TAG = RoutesAndAthletesCache.class.getSimpleName();
@@ -42,17 +37,18 @@ public class RoutesAndAthletesCache {
     private final Context context;
 
     private void fillStatement(SQLiteStatement insert, Route route) {
-        insert.bindString(1, route.name);
-        insert.bindString(2, route.author);
-        insert.bindString(3, route.grade.grade);
-        insert.bindLong(4, route.grade.cost);
-        insert.bindString(5, route.description);
-        insert.bindLong(6, route.isActive ? 1 : 0);
+        insert.bindLong(1, route.id);
+        insert.bindString(2, route.name);
+        insert.bindString(3, route.author);
+        insert.bindString(4, route.grade.grade);
+        insert.bindLong(5, route.grade.cost);
+        insert.bindString(6, route.description);
+        insert.bindLong(7, route.isActive ? 1 : 0);
     }
 
     private void fillStatement(SQLiteStatement insert, Athlete athlete){
-        insert.bindLong(0, athlete.id);
-        insert.bindString(1, athlete.firstName);
+        insert.bindLong(1, athlete.id);
+        insert.bindString(2, athlete.firstName);
         insert.bindString(3, athlete.lastName);
         insert.bindDouble(4, athlete.score);
         insert.bindLong(5, athlete.position);
@@ -82,13 +78,14 @@ public class RoutesAndAthletesCache {
                 null)) {
             if (cursor != null && cursor.moveToFirst()) {
                 for (; !cursor.isAfterLast(); cursor.moveToNext()) {
-                    String routeName = cursor.getString(0);
-                    String routeAuthor = cursor.getString(1);
-                    String routeGrade = cursor.getString(2);
-                    int routeGrateCoast = cursor.getInt(3);
-                    String routeDescription = cursor.getString(4);
-                    boolean routeIsActive = 1 == cursor.getInt(5);
-                    compTable.add(new Route(routeName, routeGrade, routeGrateCoast, routeAuthor, routeDescription, routeIsActive));
+                    int id = cursor.getInt(0);
+                    String routeName = cursor.getString(1);
+                    String routeAuthor = cursor.getString(2);
+                    String routeGrade = cursor.getString(3);
+                    int routeGrateCoast = cursor.getInt(4);
+                    String routeDescription = cursor.getString(5);
+                    boolean routeIsActive = 1 == cursor.getInt(6);
+                    compTable.add(new Route(id, routeName, routeGrade, routeGrateCoast, routeAuthor, routeDescription, routeIsActive));
                 }
             } else {
                 throw new FileNotFoundException("!!!");
@@ -106,13 +103,14 @@ public class RoutesAndAthletesCache {
         db.beginTransaction();
         db.execSQL("delete from "+ ROUTES_TABLE);
         String insertion = "INSERT INTO " + ROUTES_TABLE + " ("
+                + ROUTE_ID + ", "
                 + ROUTE_NAME + ", "
                 + ROUTE_AUTHOR + ", "
                 + ROUTE_GRADE + ", "
                 + ROUTE_GRADE_COAST + ", "
                 + ROUTE_DESCRIPTION + ", "
                 + ROUTE_IS_ACTIVE;
-        insertion += ") VALUES(?, ?, ?, ?, ?, ?)";
+        insertion += ") VALUES(?, ?, ?, ?, ?, ?, ?)";
 
         try (SQLiteStatement insert = db.compileStatement(insertion)) {
             for (Route entry : compTable) {
@@ -171,7 +169,7 @@ public class RoutesAndAthletesCache {
                 + ATHLETE_COMPONENTS[2] + ", "
                 + ATHLETE_COMPONENTS[3] + ", "
                 + ATHLETE_COMPONENTS[4];
-        insertion += ") VALUES(?, ?, ?, ?, ?, ?)";
+        insertion += ") VALUES(?, ?, ?, ?, ?)";
 
         try (SQLiteStatement insert = db.compileStatement(insertion)) {
             for (Athlete entry : compTable) {

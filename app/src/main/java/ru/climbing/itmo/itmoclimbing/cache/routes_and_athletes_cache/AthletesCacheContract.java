@@ -19,7 +19,7 @@ public final class AthletesCacheContract{
 
         String ATHLETE_FIRST_NAME = "firstName";
 
-        String ATHLETE_LAST_NAME = "firstName";
+        String ATHLETE_LAST_NAME = "lastName";
 
         String ATHLETE_SCORE = "score";
 

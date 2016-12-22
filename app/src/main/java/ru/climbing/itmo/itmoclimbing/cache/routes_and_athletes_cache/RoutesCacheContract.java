@@ -6,6 +6,7 @@ import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.Rout
 import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.RoutesCacheContract.RouteCacheColumns.ROUTE_DESCRIPTION;
 import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.RoutesCacheContract.RouteCacheColumns.ROUTE_GRADE;
 import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.RoutesCacheContract.RouteCacheColumns.ROUTE_GRADE_COAST;
+import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.RoutesCacheContract.RouteCacheColumns.ROUTE_ID;
 import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.RoutesCacheContract.RouteCacheColumns.ROUTE_IS_ACTIVE;
 import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.RoutesCacheContract.RouteCacheColumns.ROUTE_NAME;
 
@@ -16,6 +17,7 @@ import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.Rout
 
 public class RoutesCacheContract {
     interface RouteCacheColumns extends BaseColumns {
+        String ROUTE_ID = "id";
 
         String ROUTE_NAME = "name";
 
@@ -30,7 +32,7 @@ public class RoutesCacheContract {
         String ROUTE_IS_ACTIVE = "isActive";
 
         String ROUTE_COMPONENTS[] = {
-                ROUTE_NAME, ROUTE_AUTHOR, ROUTE_GRADE,
+                ROUTE_ID, ROUTE_NAME, ROUTE_AUTHOR, ROUTE_GRADE,
                 ROUTE_GRADE_COAST, ROUTE_DESCRIPTION, ROUTE_IS_ACTIVE
         };
     }
@@ -38,13 +40,14 @@ public class RoutesCacheContract {
     static final String ROUTES_TABLE = "routes_table";
     static final String CREATE_ROUTES_TABLE = "CREATE TABLE " + ROUTES_TABLE
             + " ("
+            + ROUTE_ID + " NUMERIC, "
             + ROUTE_NAME + " TEXT, "
             + ROUTE_AUTHOR + " TEXT, "
             + ROUTE_GRADE + " TEXT, "
             + ROUTE_GRADE_COAST + " NUMERIC, "
             + ROUTE_DESCRIPTION + " TEXT, "
             + ROUTE_IS_ACTIVE + " NUMERIC"
-                + ")";
+            + ")";
 
     private RoutesCacheContract() {
     }

@@ -14,6 +14,7 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 import ru.climbing.itmo.itmoclimbing.api.ItmoClimbingApi;
+import ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.RoutesAndAthletesCache;
 import ru.climbing.itmo.itmoclimbing.model.Athlete;
 import ru.climbing.itmo.itmoclimbing.model.Route;
 import ru.climbing.itmo.itmoclimbing.utils.IOUtils;
@@ -53,6 +54,8 @@ public class AthleteListLoader extends AsyncTaskLoader<LoadResult<ArrayList<Athl
                 try {
                     in = loadResult.data;
                     athletesList = JsonDOMParser.parseAthletes(in);
+                    RoutesAndAthletesCache cache = new RoutesAndAthletesCache(getContext());
+                    cache.putAthletes(athletesList);
                 } catch (JSONException | BadResponseException | IOException e) {
                     resultType = ResultType.ERROR;
                     Log.e(TAG, "loadInBackground: EROR WHILE PARSE JSON", e);

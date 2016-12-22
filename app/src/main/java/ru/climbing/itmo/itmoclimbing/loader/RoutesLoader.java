@@ -60,7 +60,7 @@ public class RoutesLoader extends AsyncTaskLoader<LoadResult<ArrayList<Route>>> 
 
                 } catch (JSONException | BadResponseException | IOException e) {
                     resultType = ResultType.ERROR;
-                    Log.e(TAG, "loadInBackground: EROR WHILE PARSE JSON", e);
+                    Log.e(TAG, "loadInBackground: ERROR WHILE PARSE JSON", e);
                 }
             } else if (resultType == ResultType.NO_INTERNET_LOADED_FROM_CACHE) {
                 // FIXME: 22.12.2016 Add new type of error

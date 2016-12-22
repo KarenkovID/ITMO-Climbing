@@ -42,7 +42,7 @@ public final class JsonDOMParser {
             final String description = jsonRoute.getString("description");
             final String author = jsonRoute.getString("author");
             final boolean isActive = jsonRoute.getBoolean("is_active");
-            resultArray.add(new Route(name, grade, cost, author, description, isActive));
+            resultArray.add(new Route(id, name, grade, cost, author, description, isActive));
         }
 
         return resultArray;
