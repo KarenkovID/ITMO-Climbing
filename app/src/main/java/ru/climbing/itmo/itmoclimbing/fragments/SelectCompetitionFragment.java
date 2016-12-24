@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -23,11 +22,8 @@ import java.util.ArrayList;
 import ru.climbing.itmo.itmoclimbing.CompetitionManagerActivity;
 import ru.climbing.itmo.itmoclimbing.R;
 import ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsCache;
-import ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsDBHelper;
 import ru.climbing.itmo.itmoclimbing.callbacks.OnSelectListItem;
 import ru.climbing.itmo.itmoclimbing.model.CompetitionsEntry;
-import ru.climbing.itmo.itmoclimbing.model.CompetitionsRoutesEntry;
-import ru.climbing.itmo.itmoclimbing.model.CompetitorEntry;
 
 /**
  * Created by Игорь on 16.12.2016.
@@ -35,8 +31,8 @@ import ru.climbing.itmo.itmoclimbing.model.CompetitorEntry;
 
 public class SelectCompetitionFragment extends Fragment implements
         View.OnClickListener, OnSelectListItem {
-    private static final int REQUEST_COMPETITION_NAME_TAG = 1;
-    private static final int REQUEST_ANOTHER_ONE = 2;
+    public static final int REQUEST_COMPETITION_NAME_TAG = 1;
+    public static final int REQUEST_ANOTHER_ONE = 2;
 
     public static final String COMPETITIONS_ARRAY_LIST_TAG = "competitionsArrayList";
 
@@ -116,7 +112,7 @@ public class SelectCompetitionFragment extends Fragment implements
     }
 
     /**
-     * Вызывается после закрытия диалогового окна
+     * Вызывается из диалогового окна, после нажатия на одну из кнопок
      *
      * @param requestCode
      * @param resultCode
@@ -124,6 +120,7 @@ public class SelectCompetitionFragment extends Fragment implements
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "onActivityResult: result from dialog was returned");
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == AppCompatActivity.RESULT_OK) {
             Log.d(TAG, "onActivityResult: RESULT_OK");
@@ -148,6 +145,7 @@ public class SelectCompetitionFragment extends Fragment implements
     }
 
     private void addCompetition(@Nullable String competitionName) {
+        Log.d(TAG, "addCompetition: String = \"" + String.valueOf(competitionName) + "\"");
         if (competitionName == null || competitionName.isEmpty()) {
             return;
         }
@@ -174,7 +172,7 @@ public class SelectCompetitionFragment extends Fragment implements
 
     @Override
     public void onClick(int position) {
-        FragmentManager fragmentManager = getChildFragmentManager();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         if (fragmentManager.findFragmentByTag(CompetitionInfoFragment.TAG) == null) {
             fragmentManager.beginTransaction()
                     .replace(R.id.container, CompetitionInfoFragment.newInstance(

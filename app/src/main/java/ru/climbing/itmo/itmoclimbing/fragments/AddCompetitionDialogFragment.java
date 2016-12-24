@@ -45,8 +45,8 @@ public class AddCompetitionDialogFragment extends DialogFragment implements Dial
         if (which == DialogInterface.BUTTON_POSITIVE) {
             Intent intent = new Intent();
             intent.putExtra(COMPETITION_NAME_TAG, etCompetitionName.getText().toString());
-            getParentFragment().onActivityResult(
-                    getTargetRequestCode(), AppCompatActivity.RESULT_OK, intent);
+            getParentFragment().onActivityResult(SelectCompetitionFragment.
+                    REQUEST_COMPETITION_NAME_TAG, AppCompatActivity.RESULT_OK, intent);
         }
     }
 }

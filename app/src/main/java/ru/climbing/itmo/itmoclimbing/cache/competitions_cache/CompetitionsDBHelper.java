@@ -3,6 +3,7 @@ package ru.climbing.itmo.itmoclimbing.cache.competitions_cache;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import ru.climbing.itmo.itmoclimbing.cache.utils.DBCorruptionHandler;
 
@@ -14,9 +15,10 @@ import static ru.climbing.itmo.itmoclimbing.cache.competitions_cache.Competition
 
 public class CompetitionsDBHelper extends SQLiteOpenHelper {
 
+    public static final String TAG = CompetitionsDBHelper.class.getSimpleName();
+
     private static final String DB_FILE_NAME = "competitions.db";
     private static volatile CompetitionsDBHelper instance;
-    private Context context;
 
 
     public CompetitionsDBHelper(Context context) {
@@ -37,6 +39,7 @@ public class CompetitionsDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        Log.d(TAG, "onCreate: sql db");
         db.execSQL(CREATE_COMPETITIONS_TABLE);
     }
 
