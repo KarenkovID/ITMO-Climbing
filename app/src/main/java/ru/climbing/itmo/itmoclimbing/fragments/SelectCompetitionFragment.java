@@ -170,6 +170,11 @@ public class SelectCompetitionFragment extends Fragment implements
         outState.putParcelableArrayList(COMPETITIONS_ARRAY_LIST_TAG, mCompetitionsList);
     }
 
+    /**
+     * It call when calls from (@{@link CompetitionsRecyclerAdapter.CompetitionVH#onClick(View)})
+     * holder when onItemClick
+     * @param position
+     */
     @Override
     public void onClick(int position) {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
