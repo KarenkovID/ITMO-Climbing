@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -96,6 +97,9 @@ public class AthletesFragment extends Fragment implements
         rvAthletes.setLayoutManager(mLayoutManager);
 
         if (mAthletesList == null) {
+            progressBar.setVisibility(View.VISIBLE);
+            tvErrorMessage.setVisibility(View.GONE);
+            rvAthletes.setVisibility(View.GONE);
             getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null, this);
         } else {
             mRecyclerAdapter.setAthletesData(mAthletesList);
@@ -105,9 +109,6 @@ public class AthletesFragment extends Fragment implements
 
     @Override
     public Loader<LoadResult<ArrayList<Athlete>>> onCreateLoader(int id, Bundle args) {
-        progressBar.setVisibility(View.VISIBLE);
-        tvErrorMessage.setVisibility(View.GONE);
-        rvAthletes.setVisibility(View.GONE);
         return new AthleteListLoader(getContext());
     }
 
@@ -152,6 +153,9 @@ public class AthletesFragment extends Fragment implements
     @Override
     public void onRefresh() {
         Log.d(TAG, "onRefresh: try to refresh data");
+        progressBar.setVisibility(View.VISIBLE);
+        tvErrorMessage.setVisibility(View.GONE);
+        rvAthletes.setVisibility(View.GONE);
         getActivity().getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
     }
 

@@ -19,7 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TableRow>
+            <TableRow
+                android:layout_marginBottom="16dp">
                 <TextView
                     android:id="@+id/tvRouteName"
                     android:layout_width="wrap_content"
@@ -50,7 +51,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:text="5c" />
             </TableRow>
 
@@ -73,7 +74,7 @@
                     android:maxLines="1"
                     android:ellipsize="end"
                     android:layout_weight="1"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
                     android:text="Крыжановский Дмитрий"/>
             </TableRow>
 

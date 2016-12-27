@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -94,19 +95,18 @@ public class RoutesFragment extends Fragment implements
 
         if (mRoutesList == null) {
             Log.d(TAG, "onViewCreated: mRoutesList = null");
+            progressBar.setVisibility(View.VISIBLE);
+            tvErrorMessage.setVisibility(View.GONE);
+            rvRoutes.setVisibility(View.GONE);
             getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null, this);
         } else {
             recyclerAdapter.setRoutesData(mRoutesList);
             rvRoutes.setVisibility(View.VISIBLE);
         }
-
     }
 
     @Override
     public Loader<LoadResult<ArrayList<Route>>> onCreateLoader(int id, Bundle args) {
-        progressBar.setVisibility(View.VISIBLE);
-        tvErrorMessage.setVisibility(View.GONE);
-        rvRoutes.setVisibility(View.GONE);
         return new RoutesLoader(getContext(), null);
     }
 
@@ -147,6 +147,9 @@ public class RoutesFragment extends Fragment implements
     @Override
     public void onRefresh() {
         Log.d(TAG, "onRefresh: try to refresh data");
+        progressBar.setVisibility(View.VISIBLE);
+        tvErrorMessage.setVisibility(View.GONE);
+        rvRoutes.setVisibility(View.GONE);
         getActivity().getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
     }
 

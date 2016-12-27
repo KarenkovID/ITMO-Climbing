@@ -2,8 +2,6 @@ package ru.climbing.itmo.itmoclimbing;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.OnApplyWindowInsetsListener;
@@ -17,23 +15,21 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.facebook.stetho.Stetho;
 
+import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
-import ru.climbing.itmo.itmoclimbing.callbacks.ActionBarDrawerCallback;
 import ru.climbing.itmo.itmoclimbing.fragments.AthletesFragment;
 import ru.climbing.itmo.itmoclimbing.fragments.FestivalFragment;
 import ru.climbing.itmo.itmoclimbing.fragments.ProfileFragment;
 import ru.climbing.itmo.itmoclimbing.fragments.RoutesFragment;
-import ru.climbing.itmo.itmoclimbing.graphicPart.GLActivity;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
-        View.OnClickListener,
-        ActionBarDrawerCallback {
+        View.OnClickListener {
     public static final String TAG = MainActivity.class.getSimpleName();
 
     private CircleImageView profileImage;
@@ -44,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -75,8 +72,8 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
                 int newTopPadding = insets.getSystemWindowInsetTop() + (int) getResources().getDimension(R.dimen.nav_header_top_padding);
-                Log.d("Navigation View", "getSystemWindowInsetTop " + insets.getSystemWindowInsetTop()
-                        + "old PaddingTop " + (int) getResources().getDimension(R.dimen.nav_header_top_padding));
+//                Log.d("Navigation View", "getSystemWindowInsetTop " + insets.getSystemWindowInsetTop()
+//                        + "old PaddingTop " + (int) getResources().getDimension(R.dimen.nav_header_top_padding));
                 v.setPadding(v.getPaddingLeft(), newTopPadding, v.getPaddingRight(),
                         v.getPaddingBottom());
                 //TODO: why does I return this
@@ -92,6 +89,10 @@ public class MainActivity extends AppCompatActivity implements
         super.onPostCreate(savedInstanceState);
         if (savedInstanceState == null) {
             onNavigationItemSelected(mNavigationView.getMenu().findItem(R.id.nav_routs));
+        } else {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            List<Fragment> fragments = fragmentManager.getFragments();
+            Log.d(TAG, "onPostCreate: fragments count" + fragments.size());
         }
     }
 
@@ -199,33 +200,5 @@ public class MainActivity extends AppCompatActivity implements
 
         DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.closeDrawer(GravityCompat.START);
-    }
-
-    private CharSequence previousTitle;
-
-    @Override
-    public void setTitleAndShowBackButton(@Nullable String string) {
-        Log.d(TAG, "showBackButton");
-        mDrawerLayout.removeDrawerListener(mActionBarDrawerToggle);
-        mActionBarDrawerToggle.setDrawerIndicatorEnabled(false);
-//        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-//        mActionBarDrawerToggle.onDrawerStateChanged(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        mActionBarDrawerToggle.syncState();
-        previousTitle = getSupportActionBar().getTitle();
-        getSupportActionBar().setTitle(string);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
-    @Override
-    public void showDrawerButton() {
-        Log.d(TAG, "showDrawerButton");
-        mActionBarDrawerToggle.setDrawerIndicatorEnabled(true);
-        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-        mActionBarDrawerToggle.onDrawerStateChanged(DrawerLayout.LOCK_MODE_UNLOCKED);
-        mActionBarDrawerToggle.setDrawerIndicatorEnabled(true);
-        mActionBarDrawerToggle.syncState();
-        getSupportActionBar().setTitle(previousTitle);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
     }
 }

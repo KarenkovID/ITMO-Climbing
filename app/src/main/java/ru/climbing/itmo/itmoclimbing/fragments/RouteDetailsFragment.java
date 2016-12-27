@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 import ru.climbing.itmo.itmoclimbing.R;
 import ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.RoutesAndAthletesCache;
-import ru.climbing.itmo.itmoclimbing.callbacks.ActionBarDrawerCallback;
 import ru.climbing.itmo.itmoclimbing.model.AthleteRouteResult;
 
 /**
@@ -27,6 +26,8 @@ public class RouteDetailsFragment extends Fragment {
     private int routeID;
     private ArrayList<AthleteRouteResult> athletesSolvedRoute;
 
+    RoutesAndAthletesCache cache;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,20 +36,13 @@ public class RouteDetailsFragment extends Fragment {
         } else {
             // TODO: 27.12.2016
         }
-        RoutesAndAthletesCache cache = new RoutesAndAthletesCache(getContext());
+        cache = new RoutesAndAthletesCache(getContext());
         try {
             athletesSolvedRoute = cache.getAthletesForRoute(routeID);
             Log.d(TAG, "onCreate: athletes  loaded from cashe");
         } catch (FileNotFoundException e) {
             athletesSolvedRoute = new ArrayList<>();
             Log.e(TAG, "onCreate: can not load athletes from cache", e);
-        }
-        try {
-            ((ActionBarDrawerCallback) getActivity()).setTitleAndShowBackButton(cache.getRouteName(routeID));
-        } catch (ClassCastException e) {
-            Log.e(TAG, "onCreate: parent activity doesn't support ActionBarDrawerCallback", e);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         }
     }
 
@@ -57,11 +51,6 @@ public class RouteDetailsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_route_details, container, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
@@ -76,25 +65,4 @@ public class RouteDetailsFragment extends Fragment {
         fragment.setArguments(arguments);
         return fragment;
     }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        try {
-            ((ActionBarDrawerCallback)getActivity()).showDrawerButton();
-        } catch (ClassCastException e) {
-            Log.e(TAG, "onCreate: parent activity doesn't support ActionBarDrawerCallback", e);
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        try {
-            ((ActionBarDrawerCallback)getActivity()).showDrawerButton();
-        } catch (ClassCastException e) {
-            Log.e(TAG, "onCreate: parent activity doesn't support ActionBarDrawerCallback", e);
-        }
-    }
-
 }
