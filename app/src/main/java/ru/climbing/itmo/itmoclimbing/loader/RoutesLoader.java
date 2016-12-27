@@ -38,6 +38,7 @@ public class RoutesLoader extends AsyncTaskLoader<LoadResult<ArrayList<Route>>> 
 
     @Override
     public LoadResult<ArrayList<Route>> loadInBackground() {
+        Log.d(TAG, "loadInBackground");
         LoadResult<InputStream> loadResult;
         HttpURLConnection connection = null;
         InputStream in = null;
@@ -63,7 +64,6 @@ public class RoutesLoader extends AsyncTaskLoader<LoadResult<ArrayList<Route>>> 
                     Log.e(TAG, "loadInBackground: ERROR WHILE PARSE JSON", e);
                 }
             } else if (resultType == ResultType.NO_INTERNET_LOADED_FROM_CACHE) {
-                // FIXME: 22.12.2016 Add new type of error
                 try {
                     routesList = new RoutesAndAthletesCache(getContext()).getRoutesList();
                 } catch (FileNotFoundException e) {

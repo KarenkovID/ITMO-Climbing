@@ -15,7 +15,7 @@ public class RoutesDBHelper extends SQLiteOpenHelper {
 
     public static final String TAG = RoutesDBHelper.class.getSimpleName();
 
-    private static final String DB_FILE_NAME = "competitions.db";
+    private static final String DB_FILE_NAME = "itmo_climbing.db";
     private static volatile RoutesDBHelper instance;
 
 

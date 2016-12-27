@@ -35,7 +35,7 @@ public class AthleteDetailsFragment extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
-    public static AthleteDetailsFragment newInstence(int AthleteID) {
+    public static AthleteDetailsFragment newInstance(int AthleteID) {
         AthleteDetailsFragment fragment = new AthleteDetailsFragment();
         Bundle arguments = new Bundle();
         arguments.putInt(ATHLETE_ID_TAG, AthleteID);

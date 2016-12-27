@@ -1,6 +1,5 @@
 package ru.climbing.itmo.itmoclimbing;
 
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -33,7 +32,6 @@ public class CompetitionManagerActivity extends AppCompatActivity {
         if (fragmentManager.findFragmentByTag(SelectCompetitionFragment.TAG) == null) {
             fragmentManager.beginTransaction()
                     .replace(R.id.container, new SelectCompetitionFragment(), SelectCompetitionFragment.TAG)
-                    .addToBackStack(BACK_STACK_TAG)
                     .commit();
         }
     }

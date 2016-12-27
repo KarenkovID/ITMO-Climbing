@@ -20,7 +20,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ru.climbing.itmo.itmoclimbing.R;
-import ru.climbing.itmo.itmoclimbing.adpters.RoutesRecyclerAdapter;
+import ru.climbing.itmo.itmoclimbing.fragments.adpters.RoutesRecyclerAdapter;
 import ru.climbing.itmo.itmoclimbing.loader.LoadResult;
 import ru.climbing.itmo.itmoclimbing.loader.ResultType;
 import ru.climbing.itmo.itmoclimbing.loader.RoutesLoader;
@@ -109,6 +109,7 @@ public class RoutesFragment extends Fragment implements
 
     @Override
     public void onLoadFinished(Loader<LoadResult<ArrayList<Route>>> loader, LoadResult<ArrayList<Route>> data) {
+        Log.d(TAG, "onLoadFinished");
         progressBar.setVisibility(View.GONE);
         mSwipeRefreshLayout.setRefreshing(false);
         // FIXME: 22.12.2016 Chenge result type

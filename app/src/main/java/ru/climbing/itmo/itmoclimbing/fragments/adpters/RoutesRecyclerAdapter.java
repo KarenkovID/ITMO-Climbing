@@ -1,4 +1,4 @@
-package ru.climbing.itmo.itmoclimbing.adpters;
+package ru.climbing.itmo.itmoclimbing.fragments.adpters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -38,6 +38,7 @@ public class RoutesRecyclerAdapter extends RecyclerView.Adapter<RoutesRecyclerAd
         Route route = routesData.get(position);
         holder.tvGrade.setText(route.grade.grade);
         holder.tvRouteName.setText(route.name);
+        holder.tvAuthor.setText(String.valueOf(route.author));
     }
 
     public void setRoutesData (ArrayList<Route> routesData) {
@@ -54,11 +55,14 @@ public class RoutesRecyclerAdapter extends RecyclerView.Adapter<RoutesRecyclerAd
         private final ImageView ivMark;
         private final TextView tvRouteName;
         private final TextView tvGrade;
+        private final TextView tvAuthor;
+
         public RouteHolder(View itemView) {
             super(itemView);
             ivMark = (ImageView) itemView.findViewById(R.id.ivMark);
             tvRouteName = (TextView) itemView.findViewById(R.id.tvRouteName);
             tvGrade = (TextView) itemView.findViewById(R.id.tvGrade);
+            tvAuthor = (TextView) itemView.findViewById(R.id.tvRouteAuthor);
         }
     }
 }

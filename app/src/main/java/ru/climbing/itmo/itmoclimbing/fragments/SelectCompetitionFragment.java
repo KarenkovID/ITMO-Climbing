@@ -17,12 +17,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import ru.climbing.itmo.itmoclimbing.CompetitionManagerActivity;
 import ru.climbing.itmo.itmoclimbing.R;
 import ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsCache;
-import ru.climbing.itmo.itmoclimbing.callbacks.OnSelectListItem;
+import ru.climbing.itmo.itmoclimbing.callbacks.OnSelectListItemListener;
 import ru.climbing.itmo.itmoclimbing.model.CompetitionsEntry;
 
 /**
@@ -30,7 +31,7 @@ import ru.climbing.itmo.itmoclimbing.model.CompetitionsEntry;
  */
 
 public class SelectCompetitionFragment extends Fragment implements
-        View.OnClickListener, OnSelectListItem {
+        View.OnClickListener, OnSelectListItemListener {
     public static final int REQUEST_COMPETITION_NAME_TAG = 1;
     public static final int REQUEST_ANOTHER_ONE = 2;
 
@@ -51,13 +52,20 @@ public class SelectCompetitionFragment extends Fragment implements
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         mCompetitionsCache = new CompetitionsCache(getContext());
         if (savedInstanceState != null) {
             Log.d(TAG, "onViewCreated: savedInstance != null");
             mCompetitionsList = savedInstanceState.getParcelableArrayList(COMPETITIONS_ARRAY_LIST_TAG);
         } else {
-            mCompetitionsList = new ArrayList<CompetitionsEntry>();
+            try {
+                mCompetitionsList = mCompetitionsCache.getCompetitionsList();
+            } catch (FileNotFoundException e) {
+                Log.wtf(TAG, "onCreate: getting competitions from cache ERROR!", e);
+                e.printStackTrace();
+                mCompetitionsList = new ArrayList<CompetitionsEntry>();
+            }
         }
     }
 
@@ -206,11 +214,11 @@ public class SelectCompetitionFragment extends Fragment implements
         @NonNull
         private LayoutInflater mLayoutInflater;
         @NonNull
-        OnSelectListItem listener;
+        OnSelectListItemListener listener;
 
         public CompetitionsRecyclerAdapter(@NonNull ArrayList<CompetitionsEntry> data,
                                            @NonNull LayoutInflater layoutInflater,
-                                           @NonNull OnSelectListItem listener) {
+                                           @NonNull OnSelectListItemListener listener) {
             this.listener = listener;
             mCompetitionData = data;
             mLayoutInflater = layoutInflater;
@@ -236,9 +244,9 @@ public class SelectCompetitionFragment extends Fragment implements
         public static class CompetitionVH extends RecyclerView.ViewHolder
                 implements View.OnClickListener {
             private TextView tvCompetitionName;
-            private OnSelectListItem listener;
+            private OnSelectListItemListener listener;
 
-            public CompetitionVH(View itemView, OnSelectListItem listener) {
+            public CompetitionVH(View itemView, OnSelectListItemListener listener) {
                 super(itemView);
                 tvCompetitionName = (TextView) itemView.findViewById(R.id.tvCompetitionName);
                 itemView.setOnClickListener(this);

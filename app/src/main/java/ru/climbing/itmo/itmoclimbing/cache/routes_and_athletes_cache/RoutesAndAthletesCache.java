@@ -63,7 +63,7 @@ public class RoutesAndAthletesCache {
     @NonNull
     public ArrayList<Route> getRoutesList()
             throws FileNotFoundException {
-        SQLiteDatabase db = CompetitionsDBHelper.getInstance(context).getReadableDatabase();
+        SQLiteDatabase db = RoutesDBHelper.getInstance(context).getReadableDatabase();
         String[] projection = ROUTE_COMPONENTS;
         ArrayList<Route> compTable = new ArrayList<>();
 
@@ -127,7 +127,7 @@ public class RoutesAndAthletesCache {
     @NonNull
     public ArrayList<Athlete> getAthletesList()
             throws FileNotFoundException {
-        SQLiteDatabase db = CompetitionsDBHelper.getInstance(context).getReadableDatabase();
+        SQLiteDatabase db = RoutesDBHelper.getInstance(context).getReadableDatabase();
         String[] projection = ATHLETE_COMPONENTS;
         ArrayList<Athlete> athletesList = new ArrayList<Athlete>();
 

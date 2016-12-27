@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -20,7 +21,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ru.climbing.itmo.itmoclimbing.R;
-import ru.climbing.itmo.itmoclimbing.adpters.AthletesRecyclerAdapter;
+import ru.climbing.itmo.itmoclimbing.callbacks.OnSelectListItemListener;
+import ru.climbing.itmo.itmoclimbing.fragments.adpters.AthletesRecyclerAdapter;
 import ru.climbing.itmo.itmoclimbing.loader.AthleteListLoader;
 import ru.climbing.itmo.itmoclimbing.loader.LoadResult;
 import ru.climbing.itmo.itmoclimbing.loader.ResultType;
@@ -32,11 +34,13 @@ import ru.climbing.itmo.itmoclimbing.model.Athlete;
 
 public class AthletesFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<LoadResult<ArrayList<Athlete>>>,
-        SwipeRefreshLayout.OnRefreshListener{
+        SwipeRefreshLayout.OnRefreshListener,
+        OnSelectListItemListener{
     public static final String TAG = AthletesFragment.class.getSimpleName();
     private static String ATHLETES_LIST_TAG = "athletesList";
 
     public static final int LOADER_ID = 1;
+    public static final String ATHLETES_DETAIL_BACK_STACK_TAG = "athletesBackStack";
 
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView rvAthletes;
@@ -78,7 +82,7 @@ public class AthletesFragment extends Fragment implements
         mSwipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED);
 
         if (mRecyclerAdapter == null) {
-            mRecyclerAdapter = new AthletesRecyclerAdapter(getContext());
+            mRecyclerAdapter = new AthletesRecyclerAdapter(getContext(), this);
         }
         rvAthletes.setAdapter(mRecyclerAdapter);
 
@@ -109,6 +113,7 @@ public class AthletesFragment extends Fragment implements
 
     @Override
     public void onLoadFinished(Loader<LoadResult<ArrayList<Athlete>>> loader, LoadResult<ArrayList<Athlete>> data) {
+        Log.d(TAG, "onLoadFinished");
         progressBar.setVisibility(View.GONE);
         mSwipeRefreshLayout.setRefreshing(false);
         // FIXME: 23.12.2016
@@ -150,5 +155,20 @@ public class AthletesFragment extends Fragment implements
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(ATHLETES_LIST_TAG, mAthletesList);
+    }
+
+    /**
+     * On item click
+     * @param position of selected item
+     */
+    @Override
+    public void onClick(int position) {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        AthleteDetailsFragment fragment =
+                AthleteDetailsFragment.newInstance(mAthletesList.get(position).id);
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, fragment)
+                .addToBackStack(ATHLETES_DETAIL_BACK_STACK_TAG)
+                .commit();
     }
 }

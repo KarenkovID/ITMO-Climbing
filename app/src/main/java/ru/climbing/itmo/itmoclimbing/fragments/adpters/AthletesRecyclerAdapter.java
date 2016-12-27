@@ -1,4 +1,4 @@
-package ru.climbing.itmo.itmoclimbing.adpters;
+package ru.climbing.itmo.itmoclimbing.fragments.adpters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ru.climbing.itmo.itmoclimbing.R;
+import ru.climbing.itmo.itmoclimbing.callbacks.OnSelectListItemListener;
 import ru.climbing.itmo.itmoclimbing.model.Athlete;
 
 /**
@@ -20,17 +21,17 @@ import ru.climbing.itmo.itmoclimbing.model.Athlete;
 public class AthletesRecyclerAdapter extends RecyclerView.Adapter<AthletesRecyclerAdapter.AthleteVH> {
 
     private ArrayList<Athlete> athletesData;
-    private Context context;
     private LayoutInflater layoutInflater;
+    private OnSelectListItemListener listener;
 
-    public AthletesRecyclerAdapter(Context context) {
-        this.context = context;
+    public AthletesRecyclerAdapter(Context context, OnSelectListItemListener listener) {
         layoutInflater = LayoutInflater.from(context);
+        this.listener = listener;
     }
 
     @Override
     public AthleteVH onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new AthleteVH(layoutInflater.inflate(R.layout.athlete_card, parent, false));
+        return new AthleteVH(layoutInflater.inflate(R.layout.athlete_card, parent, false), listener);
     }
 
     @Override
@@ -51,18 +52,27 @@ public class AthletesRecyclerAdapter extends RecyclerView.Adapter<AthletesRecycl
         return athletesData != null ? athletesData.size() : 0;
     }
 
-    public static class AthleteVH extends RecyclerView.ViewHolder {
+    public static class AthleteVH extends RecyclerView.ViewHolder implements View.OnClickListener{
         private final ImageView ivPhoto;
         private final TextView tvFirstName;
         private final TextView tvLastName;
         private final TextView tvPosition;
 
-        public AthleteVH(View itemView) {
+        private final OnSelectListItemListener listener;
+
+        public AthleteVH(View itemView, OnSelectListItemListener listener) {
             super(itemView);
             ivPhoto = (ImageView) itemView.findViewById(R.id.ivPhoto);
             tvFirstName = (TextView) itemView.findViewById(R.id.tvFirstName);
             tvLastName = (TextView) itemView.findViewById(R.id.tvLastName);
             tvPosition = (TextView) itemView.findViewById(R.id.tvPosition);
+            this.listener = listener;
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            listener.onClick(getAdapterPosition());
         }
     }
 }

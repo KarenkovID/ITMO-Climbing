@@ -106,7 +106,7 @@
     <string name="new_competition">New competition</string>
     <string name="hint_competition_name">Competition name</string>
     <string name="hint_first_name">First name</string>
-    <string name="hint_second_name">Second name</string>
+    <string name="hint_last_name">Last name</string>
     <string name="hint_login">Login</string>
     <string name="hint_password">Password</string>
     <string name="hint_confirm_password">Confirm password</string>
@@ -114,4 +114,8 @@
     <string name="create">Create</string>
     <string name="cancel">Cancel</string>
     <string name="position">Position</string>
+    <string name="solved_routes">Solved routes</string>
+    <string name="produced_routes">Produced routes</string>
+    <string name="route_author">Author</string>
+    <string name="route_grade">Grade</string>
 </resources>
