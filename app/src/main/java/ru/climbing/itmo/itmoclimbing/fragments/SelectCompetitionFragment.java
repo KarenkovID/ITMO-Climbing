@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -18,25 +17,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import ru.climbing.itmo.itmoclimbing.CompetitionManagerActivity;
 import ru.climbing.itmo.itmoclimbing.R;
 import ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsCache;
-import ru.climbing.itmo.itmoclimbing.cache.competitions_cache.CompetitionsDBHelper;
-import ru.climbing.itmo.itmoclimbing.callbacks.OnSelectListItem;
+import ru.climbing.itmo.itmoclimbing.callbacks.OnSelectListItemListener;
 import ru.climbing.itmo.itmoclimbing.model.CompetitionsEntry;
-import ru.climbing.itmo.itmoclimbing.model.CompetitionsRoutesEntry;
-import ru.climbing.itmo.itmoclimbing.model.CompetitorEntry;
 
 /**
  * Created by Игорь on 16.12.2016.
  */
 
 public class SelectCompetitionFragment extends Fragment implements
-        View.OnClickListener, OnSelectListItem {
-    private static final int REQUEST_COMPETITION_NAME_TAG = 1;
-    private static final int REQUEST_ANOTHER_ONE = 2;
+        View.OnClickListener, OnSelectListItemListener {
+    public static final int REQUEST_COMPETITION_NAME_TAG = 1;
+    public static final int REQUEST_ANOTHER_ONE = 2;
 
     public static final String COMPETITIONS_ARRAY_LIST_TAG = "competitionsArrayList";
 
@@ -55,13 +52,20 @@ public class SelectCompetitionFragment extends Fragment implements
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         mCompetitionsCache = new CompetitionsCache(getContext());
         if (savedInstanceState != null) {
             Log.d(TAG, "onViewCreated: savedInstance != null");
             mCompetitionsList = savedInstanceState.getParcelableArrayList(COMPETITIONS_ARRAY_LIST_TAG);
         } else {
-            mCompetitionsList = new ArrayList<CompetitionsEntry>();
+            try {
+                mCompetitionsList = mCompetitionsCache.getCompetitionsList();
+            } catch (FileNotFoundException e) {
+                Log.wtf(TAG, "onCreate: getting competitions from cache ERROR!", e);
+                e.printStackTrace();
+                mCompetitionsList = new ArrayList<CompetitionsEntry>();
+            }
         }
     }
 
@@ -116,7 +120,7 @@ public class SelectCompetitionFragment extends Fragment implements
     }
 
     /**
-     * Вызывается после закрытия диалогового окна
+     * Вызывается из диалогового окна, после нажатия на одну из кнопок
      *
      * @param requestCode
      * @param resultCode
@@ -124,6 +128,7 @@ public class SelectCompetitionFragment extends Fragment implements
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "onActivityResult: result from dialog was returned");
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == AppCompatActivity.RESULT_OK) {
             Log.d(TAG, "onActivityResult: RESULT_OK");
@@ -148,6 +153,7 @@ public class SelectCompetitionFragment extends Fragment implements
     }
 
     private void addCompetition(@Nullable String competitionName) {
+        Log.d(TAG, "addCompetition: String = \"" + String.valueOf(competitionName) + "\"");
         if (competitionName == null || competitionName.isEmpty()) {
             return;
         }
@@ -172,9 +178,14 @@ public class SelectCompetitionFragment extends Fragment implements
         outState.putParcelableArrayList(COMPETITIONS_ARRAY_LIST_TAG, mCompetitionsList);
     }
 
+    /**
+     * It call when calls from (@{@link CompetitionsRecyclerAdapter.CompetitionVH#onClick(View)})
+     * holder when onItemClick
+     * @param position
+     */
     @Override
     public void onClick(int position) {
-        FragmentManager fragmentManager = getChildFragmentManager();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         if (fragmentManager.findFragmentByTag(CompetitionInfoFragment.TAG) == null) {
             fragmentManager.beginTransaction()
                     .replace(R.id.container, CompetitionInfoFragment.newInstance(
@@ -203,11 +214,11 @@ public class SelectCompetitionFragment extends Fragment implements
         @NonNull
         private LayoutInflater mLayoutInflater;
         @NonNull
-        OnSelectListItem listener;
+        OnSelectListItemListener listener;
 
         public CompetitionsRecyclerAdapter(@NonNull ArrayList<CompetitionsEntry> data,
                                            @NonNull LayoutInflater layoutInflater,
-                                           @NonNull OnSelectListItem listener) {
+                                           @NonNull OnSelectListItemListener listener) {
             this.listener = listener;
             mCompetitionData = data;
             mLayoutInflater = layoutInflater;
@@ -233,9 +244,9 @@ public class SelectCompetitionFragment extends Fragment implements
         public static class CompetitionVH extends RecyclerView.ViewHolder
                 implements View.OnClickListener {
             private TextView tvCompetitionName;
-            private OnSelectListItem listener;
+            private OnSelectListItemListener listener;
 
-            public CompetitionVH(View itemView, OnSelectListItem listener) {
+            public CompetitionVH(View itemView, OnSelectListItemListener listener) {
                 super(itemView);
                 tvCompetitionName = (TextView) itemView.findViewById(R.id.tvCompetitionName);
                 itemView.setOnClickListener(this);

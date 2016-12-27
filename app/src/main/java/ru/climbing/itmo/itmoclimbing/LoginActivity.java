@@ -24,13 +24,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-//        if (savedInstanceState == null) {
-//            getSupportFragmentManager()
-//                    .beginTransaction()
-//                    .add(R.id.pagerContainer, new LoginFragment())
-//                    .commit();
-//        }
-
         viewPager = (ViewPager) findViewById(R.id.pagerContainer);
         pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), viewPager);
         viewPager.setAdapter(pagerAdapter);

@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 import ru.climbing.itmo.itmoclimbing.api.ItmoClimbingApi;
+import ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.RoutesAndAthletesCache;
 import ru.climbing.itmo.itmoclimbing.model.AthleteRouteResult;
 import ru.climbing.itmo.itmoclimbing.utils.IOUtils;
 
@@ -38,7 +39,7 @@ public class AthletsResultsTableLoader extends AsyncTaskLoader<LoadResult<ArrayL
         InputStream in = null;
         try {
             try {
-                connection = ItmoClimbingApi.getAthletesRoutesResulteTableRequest();
+                connection = ItmoClimbingApi.getAthletesRoutesResultTableRequest();
                 loadResult = LoadUtils.loadToStream(connection, getContext());
             } catch (IOException e) {
                 Log.e(TAG, "loadInBackground: error while do getRouteRequest", e);
@@ -50,9 +51,11 @@ public class AthletsResultsTableLoader extends AsyncTaskLoader<LoadResult<ArrayL
                 try {
                     in = loadResult.data;
                     resultsTable = JsonDOMParser.parseResultsTable(in);
+                    RoutesAndAthletesCache cache = new RoutesAndAthletesCache(getContext());
+                    cache.putAthletesRoutesResultsTable(resultsTable);
                 } catch (JSONException | BadResponseException | IOException e) {
                     resultType = ResultType.ERROR;
-                    Log.e(TAG, "loadInBackground: EROR WHILE PARSE JSON", e);
+                    Log.e(TAG, "loadInBackground: ERROR WHILE PARSE JSON", e);
                 }
             }
             return new LoadResult<>(resultType, resultsTable);

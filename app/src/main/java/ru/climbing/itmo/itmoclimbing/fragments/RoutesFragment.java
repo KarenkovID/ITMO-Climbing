@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -20,7 +21,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ru.climbing.itmo.itmoclimbing.R;
-import ru.climbing.itmo.itmoclimbing.adpters.RoutesRecyclerAdapter;
+import ru.climbing.itmo.itmoclimbing.callbacks.OnSelectListItemListener;
+import ru.climbing.itmo.itmoclimbing.fragments.adpters.RoutesRecyclerAdapter;
 import ru.climbing.itmo.itmoclimbing.loader.LoadResult;
 import ru.climbing.itmo.itmoclimbing.loader.ResultType;
 import ru.climbing.itmo.itmoclimbing.loader.RoutesLoader;
@@ -28,7 +30,8 @@ import ru.climbing.itmo.itmoclimbing.model.Route;
 
 public class RoutesFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<LoadResult<ArrayList<Route>>>,
-        SwipeRefreshLayout.OnRefreshListener {
+        SwipeRefreshLayout.OnRefreshListener,
+        OnSelectListItemListener{
     public static final String TAG = RoutesFragment.class.getSimpleName();
     private static String ROUTES_LIST_TAG = "routesList";
 
@@ -75,7 +78,7 @@ public class RoutesFragment extends Fragment implements
 
         if (recyclerAdapter == null) {
             Log.d(TAG, "onViewCreated: recyclerAdapter = null");
-            recyclerAdapter = new RoutesRecyclerAdapter(getContext());
+            recyclerAdapter = new RoutesRecyclerAdapter(getContext(), this);
         }
         rvRoutes.setAdapter(recyclerAdapter);
 
@@ -109,6 +112,7 @@ public class RoutesFragment extends Fragment implements
 
     @Override
     public void onLoadFinished(Loader<LoadResult<ArrayList<Route>>> loader, LoadResult<ArrayList<Route>> data) {
+        Log.d(TAG, "onLoadFinished");
         progressBar.setVisibility(View.GONE);
         mSwipeRefreshLayout.setRefreshing(false);
         // FIXME: 22.12.2016 Chenge result type
@@ -150,5 +154,16 @@ public class RoutesFragment extends Fragment implements
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(ROUTES_LIST_TAG, mRoutesList);
+    }
+
+    @Override
+    public void onClick(int position) {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        RouteDetailsFragment fragment =
+                RouteDetailsFragment.newInstance(mRoutesList.get(position).id);
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

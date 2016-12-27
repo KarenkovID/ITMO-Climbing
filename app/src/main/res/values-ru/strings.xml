@@ -10,7 +10,7 @@
     <string name="new_competition">Новое соревнование</string>
     <string name="hint_competition_name">Название соревнования</string>
     <string name="hint_first_name">Имя</string>
-    <string name="hint_second_name">Фамилия</string>
+    <string name="hint_last_name">Фамилия</string>
     <string name="hint_login">Логин</string>
     <string name="hint_password">Пароль</string>
     <string name="hint_confirm_password">Подтвердите пароль</string>
@@ -18,4 +18,8 @@
     <string name="create">Создать</string>
     <string name="cancel">Отмена</string>
     <string name="position">Место</string>
+    <string name="solved_routes">Пройденные трассы</string>
+    <string name="produced_routes">Поставленные трассы</string>
+    <string name="route_author">Автор</string>
+    <string name="route_grade">Категория</string>
 </resources>
