@@ -40,7 +40,7 @@ public class AthletesFragment extends Fragment implements
     private static String ATHLETES_LIST_TAG = "athletesList";
 
     public static final int LOADER_ID = 1;
-    public static final String ATHLETES_DETAIL_BACK_STACK_TAG = "athletesBackStack";
+//    public static final String ATHLETES_DETAIL_BACK_STACK_TAG = "athletesBackStack";
 
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView rvAthletes;
@@ -168,7 +168,7 @@ public class AthletesFragment extends Fragment implements
                 AthleteDetailsFragment.newInstance(mAthletesList.get(position).id);
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragment)
-                .addToBackStack(ATHLETES_DETAIL_BACK_STACK_TAG)
+                .addToBackStack(null)
                 .commit();
     }
 }

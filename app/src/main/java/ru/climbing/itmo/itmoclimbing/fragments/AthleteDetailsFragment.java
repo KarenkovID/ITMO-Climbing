@@ -3,9 +3,12 @@ package ru.climbing.itmo.itmoclimbing.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import ru.climbing.itmo.itmoclimbing.callbacks.ActionBarDrawerCallback;
 
 /**
  * Created by Игорь on 21.12.2016.
@@ -17,7 +20,13 @@ public class AthleteDetailsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        try {
+            ((ActionBarDrawerCallback)getActivity()).showBackButton();
+        } catch (ClassCastException e) {
+            Log.e(TAG, "onCreate: parent activity doesn't support ActionBarDrawerCallback", e);
+        }
     }
+
 
     @Nullable
     @Override
@@ -41,5 +50,25 @@ public class AthleteDetailsFragment extends Fragment {
         arguments.putInt(ATHLETE_ID_TAG, AthleteID);
         fragment.setArguments(arguments);
         return fragment;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        try {
+            ((ActionBarDrawerCallback)getActivity()).showDrawerButton();
+        } catch (ClassCastException e) {
+            Log.e(TAG, "onCreate: parent activity doesn't support ActionBarDrawerCallback", e);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        try {
+            ((ActionBarDrawerCallback)getActivity()).showDrawerButton();
+        } catch (ClassCastException e) {
+            Log.e(TAG, "onCreate: parent activity doesn't support ActionBarDrawerCallback", e);
+        }
     }
 }

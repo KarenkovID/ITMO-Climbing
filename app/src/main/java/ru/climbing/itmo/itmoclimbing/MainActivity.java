@@ -2,7 +2,6 @@ package ru.climbing.itmo.itmoclimbing;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -23,60 +22,60 @@ import android.view.MenuItem;
 import com.facebook.stetho.Stetho;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import ru.climbing.itmo.itmoclimbing.callbacks.ActionBarDrawerCallback;
 import ru.climbing.itmo.itmoclimbing.fragments.AthletesFragment;
 import ru.climbing.itmo.itmoclimbing.fragments.FestivalFragment;
 import ru.climbing.itmo.itmoclimbing.fragments.ProfileFragment;
 import ru.climbing.itmo.itmoclimbing.fragments.RoutesFragment;
 import ru.climbing.itmo.itmoclimbing.graphicPart.GLActivity;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements
+        NavigationView.OnNavigationItemSelectedListener,
+        View.OnClickListener,
+        ActionBarDrawerCallback {
     public static final String TAG = MainActivity.class.getSimpleName();
 
     private CircleImageView profileImage;
     private NavigationView mNavigationView;
     private DrawerLayout mDrawerLayout;
-
+    private ActionBarDrawerToggle mActionBarDrawerToggle;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mActionBarDrawerToggle = new ActionBarDrawerToggle(
+                this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mActionBarDrawerToggle.setToolbarNavigationClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, GLActivity.class);
-                if (intent != null) {
-                    startActivity(intent);
-                }
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: " + v);
+                onBackPressed();
             }
         });
-
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        mDrawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+        mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+        mActionBarDrawerToggle.syncState();
 
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
 
         View headerView = mNavigationView.getHeaderView(0);
 
-        profileImage = (CircleImageView)headerView.findViewById(R.id.nav_view_profile_image);
+        profileImage = (CircleImageView) headerView.findViewById(R.id.nav_view_profile_image);
         profileImage.setOnClickListener(this);
 
         //Сдвигаем содержимое header, если версия API >= 21, т.к. тулбар прозрачный
         ViewCompat.setOnApplyWindowInsetsListener(headerView, new OnApplyWindowInsetsListener() {
             @Override
             public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
-                int newTopPadding = insets.getSystemWindowInsetTop() + (int)getResources().getDimension(R.dimen.nav_header_top_padding);
+                int newTopPadding = insets.getSystemWindowInsetTop() + (int) getResources().getDimension(R.dimen.nav_header_top_padding);
                 Log.d("Navigation View", "getSystemWindowInsetTop " + insets.getSystemWindowInsetTop()
-                        + "old PaddingTop " + (int)getResources().getDimension(R.dimen.nav_header_top_padding));
+                        + "old PaddingTop " + (int) getResources().getDimension(R.dimen.nav_header_top_padding));
                 v.setPadding(v.getPaddingLeft(), newTopPadding, v.getPaddingRight(),
                         v.getPaddingBottom());
                 //TODO: why does I return this
@@ -97,36 +96,34 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
         } else {
             super.onBackPressed();
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-
-        return true;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d(TAG, "onOptionsItemSelected");
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.home) {
+            onBackPressed();
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -160,6 +157,8 @@ public class MainActivity extends AppCompatActivity
 
         // Вставляем фрагмент, заменяя текущий фрагмент
         FragmentManager fragmentManager = getSupportFragmentManager();
+        //clean back stack
+        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
         // Выделяем выбранный пункт меню в шторке
         item.setChecked(true);
@@ -201,4 +200,26 @@ public class MainActivity extends AppCompatActivity
         mDrawerLayout.closeDrawer(GravityCompat.START);
     }
 
+    @Override
+    public void showBackButton() {
+        Log.d(TAG, "showBackButton");
+        mDrawerLayout.removeDrawerListener(mActionBarDrawerToggle);
+        mActionBarDrawerToggle.setDrawerIndicatorEnabled(false);
+//        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+//        mActionBarDrawerToggle.onDrawerStateChanged(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        mActionBarDrawerToggle.syncState();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public void showDrawerButton() {
+        Log.d(TAG, "showDrawerButton");
+        mActionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        mActionBarDrawerToggle.onDrawerStateChanged(DrawerLayout.LOCK_MODE_UNLOCKED);
+        mActionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        mActionBarDrawerToggle.syncState();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+    }
 }
