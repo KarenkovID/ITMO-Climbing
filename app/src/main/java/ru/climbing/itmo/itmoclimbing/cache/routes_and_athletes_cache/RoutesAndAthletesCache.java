@@ -26,6 +26,7 @@ import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.Athl
 import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.AthletesRoutesResultsCacheContract.RESULTS_TABLE;
 import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.AthletesRoutesResultsCacheContract.ResultColumns.ATHLETE_ID;
 import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.AthletesRoutesResultsCacheContract.ResultColumns.RESULT_COMPONENTS;
+import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.AthletesRoutesResultsCacheContract.ResultColumns.RESULT_REMARK;
 import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.RoutesCacheContract.ROUTES_TABLE;
 import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.RoutesCacheContract.RouteCacheColumns.ROUTE_AUTHOR;
 import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.RoutesCacheContract.RouteCacheColumns.ROUTE_COMPONENTS;
@@ -254,7 +255,8 @@ public class RoutesAndAthletesCache {
                 "b." + RoutesCacheContract.RouteCacheColumns.ROUTE_ID + " WHERE " + "a." + ATHLETE_ID + "=" + athleteID;
         Log.d(TAG, "getAthletesSolvedRoutes: " + MY_QUERY);
         Log.d(TAG, "getAthletesSolvedRoutes: athlete id " + athleteID);
-        try (Cursor cursor = db.rawQuery(MY_QUERY, null)/*db.query(
+        try (Cursor cursor = db.rawQuery(MY_QUERY, null)
+             /*db.query(
                 RESULTS_TABLE +", " + ROUTES_TABLE ,
                 projection,
                 ATHLETE_ID + "=? AND " + RESULTS_TABLE + "."
@@ -289,6 +291,66 @@ public class RoutesAndAthletesCache {
         return resultsList;
     }
 
+    // TODO: 27.12.2016 DOES IT WORK? 
+    public ArrayList<AthleteRouteResult> getAthletesForRoute (int routeID)
+            throws FileNotFoundException{
+        SQLiteDatabase db = RoutesDBHelper.getInstance(context).getReadableDatabase();
+        String[] projection = new String[4];
+        projection[0] = "b." + AthletesCacheContract.AthleteCacheColumns.ATHLETE_ID;
+        projection[1] = "b." + ATHLETE_FIRST_NAME;
+        projection[2] ="b." + ATHLETE_LAST_NAME;
+        projection[3] = "a." + RESULT_REMARK;
+        ArrayList<AthleteRouteResult> resultsList = new ArrayList<AthleteRouteResult>();
+
+        String MY_QUERY = "SELECT";
+        for (int i = 0; i < projection.length; i++) {
+            MY_QUERY += " " + projection[i];
+            if (i != projection.length - 1) {
+                MY_QUERY += ",";
+            }
+        }
+
+        /*
+        SELECT a.id, a.athlete_id, a.route_id, a.remark, a.cost, b.name, b.grade, b.gradeCoast FROM results_table a INNER JOIN routes_table b ON a.route_id=b.id WHERE a.athlete_id=4
+         */
+
+        MY_QUERY += " FROM " + RESULTS_TABLE + " a INNER JOIN "+ ATHLETES_TABLE + " b ON "+
+                "a." + AthletesRoutesResultsCacheContract.ResultColumns.ATHLETE_ID + "=" +
+                "b." + AthletesCacheContract.AthleteCacheColumns.ATHLETE_ID + " WHERE " + "a."
+                + AthletesRoutesResultsCacheContract.ResultColumns.ROUTE_ID + "=" + routeID;
+        Log.d(TAG, "getAthletesForRoute: QUERY " + MY_QUERY);
+        try (Cursor cursor = db.rawQuery(MY_QUERY, null)
+             /*db.query(
+                RESULTS_TABLE +", " + ROUTES_TABLE ,
+                projection,
+                ATHLETE_ID + "=? AND " + RESULTS_TABLE + "."
+                    + AthletesRoutesResultsCacheContract.ResultColumns.ROUTE_ID + "="
+                    + ROUTES_TABLE + "." + ROUTE_ID,
+                new String[] {String.valueOf(athleteID)},
+                null,
+                null,
+                null)*/) {
+            if (cursor != null && cursor.moveToFirst()) {
+                Log.d(TAG, "getAthletesSolvedRoutes: cursor is not empty");
+                for (; !cursor.isAfterLast(); cursor.moveToNext()) {
+                    int athleteID = cursor.getInt(0);
+                    String firstName = cursor.getString(1);
+                    String lastName = cursor.getString(2);
+                    String name = firstName + " " + lastName;
+                    String remark = cursor.getString(3);
+                    resultsList.add(new AthleteRouteResult(athleteID, routeID, remark, name));
+                }
+            } else {
+//                throw new FileNotFoundException("!!!");
+            }
+        } catch (SQLiteException e) {
+            Log.wtf(TAG, "Query error: ", e);
+            throw new FileNotFoundException("...");
+        }
+        return resultsList;
+    }
+
+
     public String getAthleteName(int athleteID) throws FileNotFoundException{
         SQLiteDatabase db = RoutesDBHelper.getInstance(context).getReadableDatabase();
         String[] projection = new String[]{ATHLETE_FIRST_NAME, ATHLETE_LAST_NAME};
@@ -309,8 +371,32 @@ public class RoutesAndAthletesCache {
                     res = firstName + lastName;
                     break;
                 }
-            } else {
-                throw new FileNotFoundException("!!!");
+            }
+        } catch (SQLiteException e) {
+            Log.wtf(TAG, "Query error: ", e);
+            throw new FileNotFoundException("...");
+        }
+        return res == "null" ? ":c" : res;
+    }
+
+    public String getRouteName(int routeID) throws FileNotFoundException{
+        SQLiteDatabase db = RoutesDBHelper.getInstance(context).getReadableDatabase();
+        String[] projection = new String[]{ROUTE_NAME};
+
+        String res = null;
+        try (Cursor cursor = db.query(
+                ROUTES_TABLE ,
+                projection,
+                ROUTE_ID+ "=?",
+                new String[] {String.valueOf(routeID)},
+                null,
+                null,
+                null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                for (; !cursor.isAfterLast(); cursor.moveToNext()) {
+                    res = cursor.getString(0);
+                    break;
+                }
             }
         } catch (SQLiteException e) {
             Log.wtf(TAG, "Query error: ", e);

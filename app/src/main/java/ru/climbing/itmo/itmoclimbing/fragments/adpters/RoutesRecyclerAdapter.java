@@ -11,6 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ru.climbing.itmo.itmoclimbing.R;
+import ru.climbing.itmo.itmoclimbing.callbacks.OnSelectListItemListener;
 import ru.climbing.itmo.itmoclimbing.model.Route;
 
 /**
@@ -23,14 +24,17 @@ public class RoutesRecyclerAdapter extends RecyclerView.Adapter<RoutesRecyclerAd
     private Context context;
     private LayoutInflater layoutInflater;
 
-    public RoutesRecyclerAdapter(Context context) {
+    private OnSelectListItemListener listener;
+
+    public RoutesRecyclerAdapter(Context context, OnSelectListItemListener listener) {
         this.context = context;
         layoutInflater = LayoutInflater.from(context);
+        this.listener = listener;
     }
 
     @Override
     public RouteHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new RouteHolder(layoutInflater.inflate(R.layout.route_card, parent, false));
+        return new RouteHolder(layoutInflater.inflate(R.layout.route_card, parent, false), listener);
     }
 
     @Override
@@ -51,18 +55,25 @@ public class RoutesRecyclerAdapter extends RecyclerView.Adapter<RoutesRecyclerAd
         return routesData != null ? routesData.size() : 0;
     }
 
-    public static class RouteHolder extends RecyclerView.ViewHolder {
+    public static class RouteHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private final ImageView ivMark;
         private final TextView tvRouteName;
         private final TextView tvGrade;
         private final TextView tvAuthor;
-
-        public RouteHolder(View itemView) {
+        private final OnSelectListItemListener listener;
+        public RouteHolder(View itemView, OnSelectListItemListener listener) {
             super(itemView);
             ivMark = (ImageView) itemView.findViewById(R.id.ivMark);
             tvRouteName = (TextView) itemView.findViewById(R.id.tvRouteName);
             tvGrade = (TextView) itemView.findViewById(R.id.tvGrade);
             tvAuthor = (TextView) itemView.findViewById(R.id.tvRouteAuthor);
+            this.listener = listener;
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            listener.onClick(getAdapterPosition());
         }
     }
 }

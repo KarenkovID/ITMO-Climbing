@@ -201,6 +201,8 @@ public class MainActivity extends AppCompatActivity implements
         mDrawerLayout.closeDrawer(GravityCompat.START);
     }
 
+    private CharSequence previousTitle;
+
     @Override
     public void setTitleAndShowBackButton(@Nullable String string) {
         Log.d(TAG, "showBackButton");
@@ -209,6 +211,8 @@ public class MainActivity extends AppCompatActivity implements
 //        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 //        mActionBarDrawerToggle.onDrawerStateChanged(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mActionBarDrawerToggle.syncState();
+        previousTitle = getSupportActionBar().getTitle();
+        getSupportActionBar().setTitle(string);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -220,6 +224,7 @@ public class MainActivity extends AppCompatActivity implements
         mActionBarDrawerToggle.onDrawerStateChanged(DrawerLayout.LOCK_MODE_UNLOCKED);
         mActionBarDrawerToggle.setDrawerIndicatorEnabled(true);
         mActionBarDrawerToggle.syncState();
+        getSupportActionBar().setTitle(previousTitle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
     }

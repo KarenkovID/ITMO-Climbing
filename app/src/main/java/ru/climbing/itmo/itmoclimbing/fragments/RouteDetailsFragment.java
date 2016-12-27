@@ -3,8 +3,6 @@ package ru.climbing.itmo.itmoclimbing.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,45 +11,40 @@ import android.view.ViewGroup;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
+import ru.climbing.itmo.itmoclimbing.R;
 import ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.RoutesAndAthletesCache;
 import ru.climbing.itmo.itmoclimbing.callbacks.ActionBarDrawerCallback;
-import ru.climbing.itmo.itmoclimbing.loader.LoadResult;
-import ru.climbing.itmo.itmoclimbing.loader.ResultType;
 import ru.climbing.itmo.itmoclimbing.model.AthleteRouteResult;
-import ru.climbing.itmo.itmoclimbing.model.Route;
 
 /**
- * Created by Игорь on 21.12.2016.
+ * Created by Игорь on 27.12.2016.
  */
 
-public class AthleteDetailsFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<LoadResult<AthleteRouteResult>>{
-    public static final String TAG = AthleteDetailsFragment.class.getSimpleName();
-    public static final String ATHLETE_ID_TAG = "athleteID";
-    
-    private int athleteID;
-    private ArrayList<AthleteRouteResult> solvedRoutes;
-    private ArrayList<Route> madeRoutes;
-    private int raitingPosition;
+public class RouteDetailsFragment extends Fragment {
+    public static final String TAG = RouteDetailsFragment.class.getSimpleName();
+    public static final String Route_ID_TAG = "routeID";
+
+    private int routeID;
+    private ArrayList<AthleteRouteResult> athletesSolvedRoute;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
-            athleteID = getArguments().getInt(ATHLETE_ID_TAG);
+            routeID = getArguments().getInt(Route_ID_TAG);
         } else {
-            // TODO: 27.12.2016  
+            // TODO: 27.12.2016
         }
         RoutesAndAthletesCache cache = new RoutesAndAthletesCache(getContext());
         try {
-            solvedRoutes = cache.getAthletesSolvedRoutes(athleteID);
-            Log.d(TAG, "onCreate: athlete routes loaded from cashe");
+            athletesSolvedRoute = cache.getAthletesForRoute(routeID);
+            Log.d(TAG, "onCreate: athletes  loaded from cashe");
         } catch (FileNotFoundException e) {
-            solvedRoutes = new ArrayList<>();
-            Log.e(TAG, "onCreate: can not load athlete route from cache", e);
+            athletesSolvedRoute = new ArrayList<>();
+            Log.e(TAG, "onCreate: can not load athletes from cache", e);
         }
         try {
-            ((ActionBarDrawerCallback) getActivity()).setTitleAndShowBackButton(cache.getAthleteName(athleteID));
+            ((ActionBarDrawerCallback) getActivity()).setTitleAndShowBackButton(cache.getRouteName(routeID));
         } catch (ClassCastException e) {
             Log.e(TAG, "onCreate: parent activity doesn't support ActionBarDrawerCallback", e);
         } catch (FileNotFoundException e) {
@@ -63,7 +56,7 @@ public class AthleteDetailsFragment extends Fragment implements
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return inflater.inflate(R.layout.fragment_route_details, container, false);
     }
 
     @Override
@@ -76,10 +69,10 @@ public class AthleteDetailsFragment extends Fragment implements
         super.onSaveInstanceState(outState);
     }
 
-    public static AthleteDetailsFragment newInstance(int AthleteID) {
-        AthleteDetailsFragment fragment = new AthleteDetailsFragment();
+    public static RouteDetailsFragment newInstance(int routeID) {
+        RouteDetailsFragment fragment = new RouteDetailsFragment();
         Bundle arguments = new Bundle();
-        arguments.putInt(ATHLETE_ID_TAG, AthleteID);
+        arguments.putInt(Route_ID_TAG, routeID);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -104,25 +97,4 @@ public class AthleteDetailsFragment extends Fragment implements
         }
     }
 
-    @Override
-    public Loader<LoadResult<AthleteRouteResult>> onCreateLoader(int id, Bundle args) {
-        return null;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<LoadResult<AthleteRouteResult>> loader, LoadResult<AthleteRouteResult> data) {
-        // TODO: 27.12.2016
-        if (data.resultType == ResultType.NO_INTERNET_LOADED_FROM_CACHE) {
-
-        } else if (data.resultType == ResultType.NO_INTERNET) {
-
-        } else if (data.resultType == ResultType.ERROR) {
-
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<LoadResult<AthleteRouteResult>> loader) {
-
-    }
 }

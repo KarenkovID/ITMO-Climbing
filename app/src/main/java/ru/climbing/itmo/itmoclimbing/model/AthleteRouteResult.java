@@ -11,7 +11,7 @@ public class AthleteRouteResult {
     /**
      * Result ID
      */
-    public final int resultID;
+    public int resultID = -1;
     /**
      * Athlete ID in Athletes table
      */
@@ -19,7 +19,7 @@ public class AthleteRouteResult {
     /**
      * Route ID in RoutesTable
      */
-    public final int routeID;
+    public int routeID = -1;
     /**
      * Remark of athlete result (like Redpoint, Flesh, Onsite)
      */
@@ -28,8 +28,7 @@ public class AthleteRouteResult {
     /**
      * Addititional coast to
      */
-    @NonNull
-    public final int remarkCost;
+    public int remarkCost = -1;
 
     @Nullable
     public String routeName;
@@ -37,6 +36,8 @@ public class AthleteRouteResult {
     public String routeGrade;
 
     public int routeCoast;
+    @Nullable
+    public String athleteName;
 
     public AthleteRouteResult (int resultID, int athleteID, int routeID, String remark, int remarkCost) {
         this.resultID = resultID;
@@ -44,6 +45,12 @@ public class AthleteRouteResult {
         this.routeID = routeID;
         this.remark = remark;
         this.remarkCost = remarkCost;
+    }
+    public AthleteRouteResult (int athleteID, int routeID, String remark, String athleteName) {
+        this.athleteID = athleteID;
+        this.routeID = routeID;
+        this.remark = remark;
+        this.athleteName = athleteName;
     }
     public AthleteRouteResult (int resultID, int athleteID, int routeID,
                                String remark, int remarkCost,
