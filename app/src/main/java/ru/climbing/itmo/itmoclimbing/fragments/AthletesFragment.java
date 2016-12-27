@@ -118,11 +118,15 @@ public class AthletesFragment extends Fragment implements
         mSwipeRefreshLayout.setRefreshing(false);
         // FIXME: 23.12.2016
         if (data.resultType == ResultType.OK || data.resultType == ResultType.NO_INTERNET_LOADED_FROM_CACHE) {
-            Log.d(TAG, "onLoadFinished: loading is done");
             mAthletesList = data.data;
             mRecyclerAdapter.setAthletesData(mAthletesList);
             tvErrorMessage.setVisibility(View.GONE);
             rvAthletes.setVisibility(View.VISIBLE);
+            if (data.resultType == ResultType.OK) {
+                Log.d(TAG, "onLoadFinished: loaded from internet");
+            } else {
+                Log.d(TAG, "onLoadFinished: loaded from cache");
+            }
         } else {
             //TODO: error message + button
             Log.d(TAG, "onLoadFinished: data doesn't downloaded");

@@ -2,6 +2,7 @@ package ru.climbing.itmo.itmoclimbing;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -174,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onClick(View v) {
         Fragment fragment = null;
-        Class fragmentClass = null;
+        Class fragmentClass;
         switch (v.getId()) {
             case R.id.nav_view_profile_image:
                 fragmentClass = ProfileFragment.class;
@@ -201,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void showBackButton() {
+    public void setTitleAndShowBackButton(@Nullable String string) {
         Log.d(TAG, "showBackButton");
         mDrawerLayout.removeDrawerListener(mActionBarDrawerToggle);
         mActionBarDrawerToggle.setDrawerIndicatorEnabled(false);

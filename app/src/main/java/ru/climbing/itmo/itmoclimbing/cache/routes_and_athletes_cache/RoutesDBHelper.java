@@ -9,6 +9,7 @@ import ru.climbing.itmo.itmoclimbing.cache.utils.DBCorruptionHandler;
 import ru.climbing.itmo.itmoclimbing.model.Athlete;
 
 import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.AthletesCacheContract.CREATE_ATHLETES_TABLE;
+import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.AthletesRoutesResultsCacheContract.CREATE_RESULTS_TABLE;
 import static ru.climbing.itmo.itmoclimbing.cache.routes_and_athletes_cache.RoutesCacheContract.CREATE_ROUTES_TABLE;
 
 public class RoutesDBHelper extends SQLiteOpenHelper {
@@ -40,6 +41,7 @@ public class RoutesDBHelper extends SQLiteOpenHelper {
         Log.d(TAG, "onCreate: " + "CREATE_ROUTES_TABLE");
         db.execSQL(CREATE_ROUTES_TABLE);
         db.execSQL(CREATE_ATHLETES_TABLE);
+        db.execSQL(CREATE_RESULTS_TABLE);
     }
 
     @Override

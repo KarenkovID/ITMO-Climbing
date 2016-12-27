@@ -70,6 +70,10 @@ public class RoutesLoader extends AsyncTaskLoader<LoadResult<ArrayList<Route>>> 
                     resultType = ResultType.ERROR;
                 }
             }
+            //Пытаемсся грузить данные о пролазах
+            if (resultType == ResultType.OK) {
+                new AthletsResultsTableLoader(getContext()).loadInBackground();
+            }
             return new LoadResult<>(resultType, routesList);
         } finally {
             if (in != null) {
