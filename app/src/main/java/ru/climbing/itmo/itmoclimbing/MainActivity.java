@@ -22,6 +22,7 @@ import com.facebook.stetho.Stetho;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import ru.climbing.itmo.itmoclimbing.fragments.AthleteDetailsFragment;
 import ru.climbing.itmo.itmoclimbing.fragments.AthletesFragment;
 import ru.climbing.itmo.itmoclimbing.fragments.FestivalFragment;
 import ru.climbing.itmo.itmoclimbing.fragments.ProfileFragment;
@@ -155,10 +156,6 @@ public class MainActivity extends AppCompatActivity implements
             fragmentClass = RoutesFragment.class;
         } else if (id == R.id.nav_members) {
             fragmentClass = AthletesFragment.class;
-        } else if (id == R.id.nav_festival) {
-            fragmentClass = FestivalFragment.class;
-        } else if (id == R.id.nav_profile) {
-            fragmentClass = ProfileFragment.class;
         } else if (id == R.id.competitions_manager) {
             Intent intent = new Intent(this, CompetitionManagerActivity.class);
             startActivity(intent);
@@ -195,19 +192,12 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onClick(View v) {
         Fragment fragment = null;
-        Class fragmentClass;
         switch (v.getId()) {
             case R.id.nav_view_profile_image:
-                fragmentClass = ProfileFragment.class;
+                fragment = AthleteDetailsFragment.newInstance(13);
                 break;
             default:
                 return;
-        }
-
-        try {
-            fragment = (Fragment) fragmentClass.newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
         // Вставляем фрагмент, заменяя текущий фрагмент

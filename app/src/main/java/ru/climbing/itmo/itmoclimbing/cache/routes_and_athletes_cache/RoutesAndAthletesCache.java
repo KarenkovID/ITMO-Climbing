@@ -434,4 +434,37 @@ public class RoutesAndAthletesCache {
         }
         return resultsList;
     }
+
+    public Route getRoute(int routeID) throws FileNotFoundException{
+        SQLiteDatabase db = RoutesDBHelper.getInstance(context).getReadableDatabase();
+        String[] projection = ROUTE_COMPONENTS;
+
+        Route res = null;
+        try (Cursor cursor = db.query(
+                ROUTES_TABLE ,
+                projection,
+                ROUTE_ID + "=?",
+                new String[] {String.valueOf(routeID)},
+                null,
+                null,
+                null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                for (; !cursor.isAfterLast(); cursor.moveToNext()) {
+                    int id = cursor.getInt(0);
+                    String routeName = cursor.getString(1);
+                    String routeAuthor = cursor.getString(2);
+                    String routeGrade = cursor.getString(3);
+                    int routeGrateCoast = cursor.getInt(4);
+                    String routeDescription = cursor.getString(5);
+                    boolean routeIsActive = 1 == cursor.getInt(6);
+                    res = new Route(id, routeName, routeGrade, routeGrateCoast, routeAuthor, routeDescription, routeIsActive);
+                    break;
+                }
+            }
+        } catch (SQLiteException e) {
+            Log.wtf(TAG, "Query error: ", e);
+            throw new FileNotFoundException("...");
+        }
+        return res;
+    }
 }

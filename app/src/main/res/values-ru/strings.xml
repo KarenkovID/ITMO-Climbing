@@ -23,4 +23,10 @@
     <string name="route_author">Автор</string>
     <string name="route_grade">Категория</string>
     <string name="nothing_here">Пока здесь ничего нет :c</string>
+    <string name="tops">Последние пролазы</string>
+    <string name="route_grade_cost">Стоимость</string>
+    <string name="route_description">Описание</string>
+    <string name="sign_in">Войти</string>
+    <string name="sign_up">Зарегистрироваться</string>
+    <string name="test_launch">Тестовый запуск</string>
 </resources>

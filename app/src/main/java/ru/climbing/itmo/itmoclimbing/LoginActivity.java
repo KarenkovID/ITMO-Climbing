@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -14,6 +15,7 @@ import ru.climbing.itmo.itmoclimbing.fragments.SignInFragment;
 import ru.climbing.itmo.itmoclimbing.fragments.SignUpFragment;
 
 public class LoginActivity extends AppCompatActivity {
+    public static final String TAG = LoginActivity.class.getSimpleName();
 
     private ViewPager viewPager;
 
@@ -21,6 +23,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -47,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         public static final int SIGN_IN = 1, SIGN_UP = 2;
         private SignInFragment signInFragment = new SignInFragment();
         private SignUpFragment signUpFragment = new SignUpFragment();
-        private LoginFragment loginFragment = new LoginFragment(this);
+        private LoginFragment loginFragment = new LoginFragment();
         private Fragment curSecondFragment = signInFragment;
         private int curSecondPageType = 1;
 
@@ -120,5 +123,11 @@ public class LoginActivity extends AppCompatActivity {
 
 
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("adapter", pagerAdapter.saveState());
     }
 }

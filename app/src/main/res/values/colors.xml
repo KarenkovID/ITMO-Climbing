@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#ffcc0000</color>
-    <color name="colorPrimaryDark">#ff990000</color>
-    <color name="colorAccent">#0000cc</color>
-    <color name="colorBonusPrimary">#FFF5c1</color>
-    <color name="colorBluePrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <!--<color name="colorPrimary">#ffcc0000</color>-->
+    <!--<color name="colorPrimaryDark">#ff990000</color>-->
+    <!--<color name="colorAccent">#0000cc</color>-->
+    <!--<color name="colorBonusPrimary">#FFF5c1</color>-->
+    <!--<color name="colorBluePrimaryDark">#303F9F</color>-->
 </resources>

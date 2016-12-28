@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:textColor="@color/colorAccent"
-            android:text="LOGIN" />
+            android:text="@string/sign_in" />
 
         <Button
             android:id="@+id/button_register"
@@ -33,7 +33,15 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:textColor="@color/colorAccent"
-            android:text="REGISTRATION" />
+            android:text="@string/sign_up" />
+
+        <Button
+            android:id="@+id/button_test_launch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/colorAccent"
+            android:text="@string/test_launch" />
 
     </LinearLayout>
 
