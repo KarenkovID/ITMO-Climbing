@@ -31,12 +31,16 @@ public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
         View.OnClickListener {
     public static final String TAG = MainActivity.class.getSimpleName();
+    public static final String CURRENT_FRAGMENT_TAG = "currentFragment";
+    public static final String TITLE_TAG = "title";
 
     private CircleImageView profileImage;
     private NavigationView mNavigationView;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private Toolbar toolbar;
+
+    private String mCurrentFragmentTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,13 +101,25 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mCurrentFragmentTag = savedInstanceState.getString(CURRENT_FRAGMENT_TAG, "");
+    }
+
+    @Override
     public void onBackPressed() {
+        Log.d(TAG, "onBackPressed");
+        FragmentManager fragmentManager = getSupportFragmentManager();
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
-        } else if (getFragmentManager().getBackStackEntryCount() > 0) {
-            getFragmentManager().popBackStack();
         } else {
-            super.onBackPressed();
+            Fragment fragment = fragmentManager.findFragmentByTag(mCurrentFragmentTag);
+            FragmentManager childFragmentManager = fragment.getChildFragmentManager();
+            if (childFragmentManager.getBackStackEntryCount() > 0) {
+                childFragmentManager.popBackStack();
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -161,7 +177,10 @@ public class MainActivity extends AppCompatActivity implements
         FragmentManager fragmentManager = getSupportFragmentManager();
         //clean back stack
         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+        mCurrentFragmentTag = fragment.getClass().getSimpleName();
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, fragment, mCurrentFragmentTag)
+                .commit();
         // Выделяем выбранный пункт меню в шторке
         item.setChecked(true);
         // Выводим выбранный пункт в заголовке
@@ -200,5 +219,12 @@ public class MainActivity extends AppCompatActivity implements
 
         DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.closeDrawer(GravityCompat.START);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(CURRENT_FRAGMENT_TAG, mCurrentFragmentTag);
+        outState.putString(TITLE_TAG, getSupportActionBar().getTitle().toString());
     }
 }

@@ -103,6 +103,8 @@ public class RoutesFragment extends Fragment implements
             recyclerAdapter.setRoutesData(mRoutesList);
             rvRoutes.setVisibility(View.VISIBLE);
         }
+
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.routes);
     }
 
     @Override
@@ -161,7 +163,8 @@ public class RoutesFragment extends Fragment implements
 
     @Override
     public void onClick(int position) {
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        Log.d(TAG, "onClick: position " + position);
+        FragmentManager fragmentManager = getChildFragmentManager();
         RouteDetailsFragment fragment =
                 RouteDetailsFragment.newInstance(mRoutesList.get(position).id);
         fragmentManager.beginTransaction()

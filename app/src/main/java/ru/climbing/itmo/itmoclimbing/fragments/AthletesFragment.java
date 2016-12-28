@@ -105,6 +105,7 @@ public class AthletesFragment extends Fragment implements
             mRecyclerAdapter.setAthletesData(mAthletesList);
             rvAthletes.setVisibility(View.VISIBLE);
         }
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.members);
     }
 
     @Override
@@ -171,7 +172,7 @@ public class AthletesFragment extends Fragment implements
      */
     @Override
     public void onClick(int position) {
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentManager fragmentManager = getChildFragmentManager();
         AthleteDetailsFragment fragment =
                 AthleteDetailsFragment.newInstance(mAthletesList.get(position).id);
         fragmentManager.beginTransaction()

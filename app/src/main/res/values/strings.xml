@@ -118,4 +118,5 @@
     <string name="produced_routes">Produced routes</string>
     <string name="route_author">Author</string>
     <string name="route_grade">Grade</string>
+    <string name="nothing_here">Nothing here :c</string>
 </resources>

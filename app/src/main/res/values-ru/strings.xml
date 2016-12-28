@@ -22,4 +22,5 @@
     <string name="produced_routes">Поставленные трассы</string>
     <string name="route_author">Автор</string>
     <string name="route_grade">Категория</string>
+    <string name="nothing_here">Пока здесь ничего нет :c</string>
 </resources>
