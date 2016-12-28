@@ -2,8 +2,6 @@ package ru.climbing.itmo.itmoclimbing;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.OnApplyWindowInsetsListener;
@@ -17,24 +15,25 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.facebook.stetho.Stetho;
 
+import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
-import ru.climbing.itmo.itmoclimbing.callbacks.ActionBarDrawerCallback;
+import ru.climbing.itmo.itmoclimbing.fragments.AthleteDetailsFragment;
 import ru.climbing.itmo.itmoclimbing.fragments.AthletesFragment;
 import ru.climbing.itmo.itmoclimbing.fragments.FestivalFragment;
 import ru.climbing.itmo.itmoclimbing.fragments.ProfileFragment;
 import ru.climbing.itmo.itmoclimbing.fragments.RoutesFragment;
-import ru.climbing.itmo.itmoclimbing.graphicPart.GLActivity;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
-        View.OnClickListener,
-        ActionBarDrawerCallback {
+        View.OnClickListener {
     public static final String TAG = MainActivity.class.getSimpleName();
+    public static final String CURRENT_FRAGMENT_TAG = "currentFragment";
+    public static final String TITLE_TAG = "title";
 
     private CircleImageView profileImage;
     private NavigationView mNavigationView;
@@ -42,8 +41,11 @@ public class MainActivity extends AppCompatActivity implements
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private Toolbar toolbar;
 
+    private String mCurrentFragmentTag;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -75,8 +77,8 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
                 int newTopPadding = insets.getSystemWindowInsetTop() + (int) getResources().getDimension(R.dimen.nav_header_top_padding);
-                Log.d("Navigation View", "getSystemWindowInsetTop " + insets.getSystemWindowInsetTop()
-                        + "old PaddingTop " + (int) getResources().getDimension(R.dimen.nav_header_top_padding));
+//                Log.d("Navigation View", "getSystemWindowInsetTop " + insets.getSystemWindowInsetTop()
+//                        + "old PaddingTop " + (int) getResources().getDimension(R.dimen.nav_header_top_padding));
                 v.setPadding(v.getPaddingLeft(), newTopPadding, v.getPaddingRight(),
                         v.getPaddingBottom());
                 //TODO: why does I return this
@@ -92,17 +94,33 @@ public class MainActivity extends AppCompatActivity implements
         super.onPostCreate(savedInstanceState);
         if (savedInstanceState == null) {
             onNavigationItemSelected(mNavigationView.getMenu().findItem(R.id.nav_routs));
+        } else {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            List<Fragment> fragments = fragmentManager.getFragments();
+            Log.d(TAG, "onPostCreate: fragments count" + fragments.size());
         }
     }
 
     @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mCurrentFragmentTag = savedInstanceState.getString(CURRENT_FRAGMENT_TAG, "");
+    }
+
+    @Override
     public void onBackPressed() {
+        Log.d(TAG, "onBackPressed");
+        FragmentManager fragmentManager = getSupportFragmentManager();
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
-        } else if (getFragmentManager().getBackStackEntryCount() > 0) {
-            getFragmentManager().popBackStack();
         } else {
-            super.onBackPressed();
+            Fragment fragment = fragmentManager.findFragmentByTag(mCurrentFragmentTag);
+            FragmentManager childFragmentManager = fragment.getChildFragmentManager();
+            if (childFragmentManager.getBackStackEntryCount() > 0) {
+                childFragmentManager.popBackStack();
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -138,10 +156,6 @@ public class MainActivity extends AppCompatActivity implements
             fragmentClass = RoutesFragment.class;
         } else if (id == R.id.nav_members) {
             fragmentClass = AthletesFragment.class;
-        } else if (id == R.id.nav_festival) {
-            fragmentClass = FestivalFragment.class;
-        } else if (id == R.id.nav_profile) {
-            fragmentClass = ProfileFragment.class;
         } else if (id == R.id.competitions_manager) {
             Intent intent = new Intent(this, CompetitionManagerActivity.class);
             startActivity(intent);
@@ -160,7 +174,10 @@ public class MainActivity extends AppCompatActivity implements
         FragmentManager fragmentManager = getSupportFragmentManager();
         //clean back stack
         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+        mCurrentFragmentTag = fragment.getClass().getSimpleName();
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, fragment, mCurrentFragmentTag)
+                .commit();
         // Выделяем выбранный пункт меню в шторке
         item.setChecked(true);
         // Выводим выбранный пункт в заголовке
@@ -175,19 +192,12 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onClick(View v) {
         Fragment fragment = null;
-        Class fragmentClass;
         switch (v.getId()) {
             case R.id.nav_view_profile_image:
-                fragmentClass = ProfileFragment.class;
+                fragment = AthleteDetailsFragment.newInstance(13);
                 break;
             default:
                 return;
-        }
-
-        try {
-            fragment = (Fragment) fragmentClass.newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
         // Вставляем фрагмент, заменяя текущий фрагмент
@@ -201,31 +211,10 @@ public class MainActivity extends AppCompatActivity implements
         mDrawerLayout.closeDrawer(GravityCompat.START);
     }
 
-    private CharSequence previousTitle;
-
     @Override
-    public void setTitleAndShowBackButton(@Nullable String string) {
-        Log.d(TAG, "showBackButton");
-        mDrawerLayout.removeDrawerListener(mActionBarDrawerToggle);
-        mActionBarDrawerToggle.setDrawerIndicatorEnabled(false);
-//        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-//        mActionBarDrawerToggle.onDrawerStateChanged(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        mActionBarDrawerToggle.syncState();
-        previousTitle = getSupportActionBar().getTitle();
-        getSupportActionBar().setTitle(string);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
-    @Override
-    public void showDrawerButton() {
-        Log.d(TAG, "showDrawerButton");
-        mActionBarDrawerToggle.setDrawerIndicatorEnabled(true);
-        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-        mActionBarDrawerToggle.onDrawerStateChanged(DrawerLayout.LOCK_MODE_UNLOCKED);
-        mActionBarDrawerToggle.setDrawerIndicatorEnabled(true);
-        mActionBarDrawerToggle.syncState();
-        getSupportActionBar().setTitle(previousTitle);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(CURRENT_FRAGMENT_TAG, mCurrentFragmentTag);
+        outState.putString(TITLE_TAG, getSupportActionBar().getTitle().toString());
     }
 }

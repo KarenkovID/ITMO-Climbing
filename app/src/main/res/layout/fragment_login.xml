@@ -9,7 +9,12 @@
         android:layout_height="fill_parent"
         android:scaleType="centerCrop"
         android:src="@mipmap/mountains" />
-
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:scaleType="centerInside"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/logo"/>
     <LinearLayout
         style="?android:attr/buttonBarStyle"
         android:layout_width="wrap_content"
@@ -25,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:textColor="@color/colorAccent"
-            android:text="LOGIN" />
+            android:text="@string/sign_in" />
 
         <Button
             android:id="@+id/button_register"
@@ -33,7 +38,15 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:textColor="@color/colorAccent"
-            android:text="REGISTRATION" />
+            android:text="@string/sign_up" />
+
+        <Button
+            android:id="@+id/button_test_launch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/colorAccent"
+            android:text="@string/test_launch" />
 
     </LinearLayout>
 

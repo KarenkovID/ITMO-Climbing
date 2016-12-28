@@ -255,17 +255,7 @@ public class RoutesAndAthletesCache {
                 "b." + RoutesCacheContract.RouteCacheColumns.ROUTE_ID + " WHERE " + "a." + ATHLETE_ID + "=" + athleteID;
         Log.d(TAG, "getAthletesSolvedRoutes: " + MY_QUERY);
         Log.d(TAG, "getAthletesSolvedRoutes: athlete id " + athleteID);
-        try (Cursor cursor = db.rawQuery(MY_QUERY, null)
-             /*db.query(
-                RESULTS_TABLE +", " + ROUTES_TABLE ,
-                projection,
-                ATHLETE_ID + "=? AND " + RESULTS_TABLE + "."
-                    + AthletesRoutesResultsCacheContract.ResultColumns.ROUTE_ID + "="
-                    + ROUTES_TABLE + "." + ROUTE_ID,
-                new String[] {String.valueOf(athleteID)},
-                null,
-                null,
-                null)*/) {
+        try (Cursor cursor = db.rawQuery(MY_QUERY, null)) {
             if (cursor != null && cursor.moveToFirst()) {
                 Log.d(TAG, "getAthletesSolvedRoutes: cursor is not empty");
                 for (; !cursor.isAfterLast(); cursor.moveToNext()) {
@@ -291,7 +281,7 @@ public class RoutesAndAthletesCache {
         return resultsList;
     }
 
-    // TODO: 27.12.2016 DOES IT WORK? 
+    // TODO: 27.12.2016 DOES IT WORK?
     public ArrayList<AthleteRouteResult> getAthletesForRoute (int routeID)
             throws FileNotFoundException{
         SQLiteDatabase db = RoutesDBHelper.getInstance(context).getReadableDatabase();
@@ -319,17 +309,7 @@ public class RoutesAndAthletesCache {
                 "b." + AthletesCacheContract.AthleteCacheColumns.ATHLETE_ID + " WHERE " + "a."
                 + AthletesRoutesResultsCacheContract.ResultColumns.ROUTE_ID + "=" + routeID;
         Log.d(TAG, "getAthletesForRoute: QUERY " + MY_QUERY);
-        try (Cursor cursor = db.rawQuery(MY_QUERY, null)
-             /*db.query(
-                RESULTS_TABLE +", " + ROUTES_TABLE ,
-                projection,
-                ATHLETE_ID + "=? AND " + RESULTS_TABLE + "."
-                    + AthletesRoutesResultsCacheContract.ResultColumns.ROUTE_ID + "="
-                    + ROUTES_TABLE + "." + ROUTE_ID,
-                new String[] {String.valueOf(athleteID)},
-                null,
-                null,
-                null)*/) {
+        try (Cursor cursor = db.rawQuery(MY_QUERY, null)) {
             if (cursor != null && cursor.moveToFirst()) {
                 Log.d(TAG, "getAthletesSolvedRoutes: cursor is not empty");
                 for (; !cursor.isAfterLast(); cursor.moveToNext()) {
@@ -368,7 +348,7 @@ public class RoutesAndAthletesCache {
                 for (; !cursor.isAfterLast(); cursor.moveToNext()) {
                     String firstName = cursor.getString(0);
                     String lastName = cursor.getString(1);
-                    res = firstName + lastName;
+                    res = firstName + " " + lastName;
                     break;
                 }
             }
@@ -403,5 +383,88 @@ public class RoutesAndAthletesCache {
             throw new FileNotFoundException("...");
         }
         return res == "null" ? ":c" : res;
+    }
+
+    public ArrayList<Route> getAthletesMadeRoutes(int athleteID) throws FileNotFoundException{
+        SQLiteDatabase db = RoutesDBHelper.getInstance(context).getReadableDatabase();
+        String[] projection = new String[ROUTE_COMPONENTS.length];
+        for (int i = 0; i < ROUTE_COMPONENTS.length; i++) {
+            projection[i] = "a." + ROUTE_COMPONENTS[i];
+        }
+        ArrayList<Route> resultsList = new ArrayList<Route>();
+
+        String MY_QUERY = "SELECT";
+        for (int i = 0; i < projection.length; i++) {
+            MY_QUERY += " " + projection[i];
+            if (i != projection.length - 1) {
+                MY_QUERY += ",";
+            }
+        }
+
+        /*
+        SELECT a.name, a.grade FROM routes_table a INNER JOIN athletes_table b ON a.author = b.firstName || ' ' || b.lastName WHERE b.id=13
+         */
+
+        MY_QUERY += " FROM " + ROUTES_TABLE + " a INNER JOIN "+ ATHLETES_TABLE + " b ON "+
+                "a." + RoutesCacheContract.RouteCacheColumns.ROUTE_AUTHOR + "=" +
+                "b." + ATHLETE_LAST_NAME + " || ' ' || b." + ATHLETE_FIRST_NAME + " WHERE " + "b."
+                + AthletesCacheContract.AthleteCacheColumns.ATHLETE_ID + "=" + athleteID;
+        Log.d(TAG, "getAthletesSolvedRoutes: " + MY_QUERY);
+        Log.d(TAG, "getAthletesSolvedRoutes: athlete id " + athleteID);
+        try (Cursor cursor = db.rawQuery(MY_QUERY, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                Log.d(TAG, "getAthletesSolvedRoutes: cursor is not empty");
+                for (; !cursor.isAfterLast(); cursor.moveToNext()) {
+                    int id = cursor.getInt(0);
+                    String routeName = cursor.getString(1);
+                    String routeAuthor = cursor.getString(2);
+                    String routeGrade = cursor.getString(3);
+                    int routeGrateCoast = cursor.getInt(4);
+                    String routeDescription = cursor.getString(5);
+                    boolean routeIsActive = 1 == cursor.getInt(6);
+                    resultsList.add(new Route(id, routeName, routeGrade, routeGrateCoast,
+                            routeAuthor, routeDescription, routeIsActive));
+                }
+            } else {
+//                throw new FileNotFoundException("!!!");
+            }
+        } catch (SQLiteException e) {
+            Log.wtf(TAG, "Query error: ", e);
+            throw new FileNotFoundException("...");
+        }
+        return resultsList;
+    }
+
+    public Route getRoute(int routeID) throws FileNotFoundException{
+        SQLiteDatabase db = RoutesDBHelper.getInstance(context).getReadableDatabase();
+        String[] projection = ROUTE_COMPONENTS;
+
+        Route res = null;
+        try (Cursor cursor = db.query(
+                ROUTES_TABLE ,
+                projection,
+                ROUTE_ID + "=?",
+                new String[] {String.valueOf(routeID)},
+                null,
+                null,
+                null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                for (; !cursor.isAfterLast(); cursor.moveToNext()) {
+                    int id = cursor.getInt(0);
+                    String routeName = cursor.getString(1);
+                    String routeAuthor = cursor.getString(2);
+                    String routeGrade = cursor.getString(3);
+                    int routeGrateCoast = cursor.getInt(4);
+                    String routeDescription = cursor.getString(5);
+                    boolean routeIsActive = 1 == cursor.getInt(6);
+                    res = new Route(id, routeName, routeGrade, routeGrateCoast, routeAuthor, routeDescription, routeIsActive);
+                    break;
+                }
+            }
+        } catch (SQLiteException e) {
+            Log.wtf(TAG, "Query error: ", e);
+            throw new FileNotFoundException("...");
+        }
+        return res;
     }
 }

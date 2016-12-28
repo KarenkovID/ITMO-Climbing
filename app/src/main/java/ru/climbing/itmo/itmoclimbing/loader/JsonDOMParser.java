@@ -67,7 +67,7 @@ public final class JsonDOMParser {
             final String lastName = jsonAthlete.getString("last_name");
             final double score = jsonAthlete.getDouble("score");
             final int position = jsonAthlete.getInt("position");
-            resultArray.add(new Athlete(id, lastName, firstName, score, position));
+            resultArray.add(new Athlete(id, firstName ,lastName, score, position));
         }
         return resultArray;
     }

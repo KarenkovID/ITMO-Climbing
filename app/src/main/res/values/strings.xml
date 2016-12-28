@@ -118,4 +118,11 @@
     <string name="produced_routes">Produced routes</string>
     <string name="route_author">Author</string>
     <string name="route_grade">Grade</string>
+    <string name="nothing_here">Nothing here :c</string>
+    <string name="tops">Last Tops</string>
+    <string name="route_grade_cost">Grade cost</string>
+    <string name="route_description">Description</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_up">Sign up</string>
+    <string name="test_launch">Test launch</string>
 </resources>
